@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+"""
+:copyright: (c) 2013 by Emmanuel Levijarvi
+:license: BSD
+"""
+
+import eagle_gateway
+
+if __name__ == "__main__":
+    eagle_gateway.main()
