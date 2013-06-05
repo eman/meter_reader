@@ -73,6 +73,19 @@ class Gateway(object):
                     path.pop()
         return response
 
+    @staticmethod
+    def xml2dict2(xml):
+        with closing(StringIO.StringIO(xml)) as f:
+            path = []
+            response = []
+            for event, element in ET.iterparse(f, events=('start', 'end')):
+                if element.tag == "response":
+                    continue
+                if event == 'start':
+                    path.append(element.tag)
+                else:
+                    path.pop()
+
 
 def display(output):
     keywidth = 0
@@ -85,7 +98,7 @@ def display(output):
         for key, value in list(output[section].items()):
             if 'MacId' in key or 'Code' in key:
                 value = ':'.join(value.lstrip('0x')[i:i+2]
-                                 for i in range(0, 12, 2))
+                                 for i in range(0, 15, 2))
             print(' ' * 3, key.ljust(keywidth, ' '), value)
 
 
@@ -99,3 +112,4 @@ def main():
     args = parser.parse_args()
     gw = Gateway(args.address)
     display(gw.run_command(args.command))
+    # print(gw.run_command_raw(args.command))
