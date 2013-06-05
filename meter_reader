@@ -4,7 +4,7 @@
 :license: BSD
 """
 
-import eagle_gateway
+import meter_reader
 
 if __name__ == "__main__":
-    eagle_gateway.main()
+    meter_reader.main()

@@ -1,8 +1,8 @@
 """
-Eagle Gateway Client
+Meter Reader
 ----------------------
 
-Eagle Gateway Client is a command line client for retrieving data
+Meter Reader is a command line client for retrieving data
 from the Eagle Energy Gateway.
 
 :copyright: (c) 2013 by Emmanuel Levijarvi
@@ -11,12 +11,13 @@ from the Eagle Energy Gateway.
 
 from distutils.core import setup
 
-setup(name='Eagle Gateway Client',
+setup(name='Meter Reader',
       version='1.0',
-      description='Command-line client for Eagle Gateway, from Rainforest.',
+      description='',
       author='Emmanuel Levijarvi',
       author_email='emansl@gmail.com',
-      py_modules=['eagle_gateway'],
+      url='https://github.com/eman/meter_reader',
+      py_modules=['meter_reader'],
       license="BSD",
-      scripts=['eagle_client'],
+      scripts=['meter_reader'],
 )

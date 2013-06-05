@@ -1,8 +1,8 @@
 """
-Eagle Energy Gateway Client
+Meter Reader
 ------------------------------
 
-Eagle Energy Gateway Client is a command line client for retrieving data
+Meter Reader is a command line client for retrieving data
 from the Eagle Energy Gateway.
 
 More information on the Eagle Engergy Gateway can be found here:
