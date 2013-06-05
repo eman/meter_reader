@@ -1,6 +1,6 @@
 """
 Meter Reader
-------------------------------
+------------------------------------------------------------------------------
 
 Meter Reader is a command line client for retrieving data
 from the Eagle Energy Gateway.
@@ -11,11 +11,13 @@ http://www.rainforestautomation.com
 :copyright: (c) 2013 by Emmanuel Levijarvi
 :license: BSD
 """
+
 from __future__ import print_function
 import socket
 import argparse
 import xml.etree.ElementTree as ET
 from contextlib import closing
+# python 2/3 compatibilty fix-up
 try:
     import StringIO
 except ImportError:
@@ -45,6 +47,8 @@ class Gateway(object):
         with closing(socket.create_connection((self.address, self.port))) as s:
             s.sendall(COMMAND_XML.format(command, self.mac_id).encode())
             cmd_output = s.makefile().read()
+        # responses come as multiple XML fragments. Enclose them in
+        # <response> to ensure valid XML.
         return '<response>{0}</response>'.format(cmd_output)
 
     def run_command(self, command):
