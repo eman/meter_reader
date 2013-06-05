@@ -67,7 +67,7 @@ class Gateway(object):
                             response[path[0]] = {element.tag: element.text}
                 else:
                     path.pop()
-            return response
+        return response
 
 
 def display(output):
