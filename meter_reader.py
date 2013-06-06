@@ -13,6 +13,7 @@ http://www.rainforestautomation.com
 """
 
 from __future__ import print_function
+import sys
 import socket
 import argparse
 import xml.etree.ElementTree as ET
@@ -96,9 +97,11 @@ def display(output):
     for section in output:
         print(section)
         for key, value in list(output[section].items()):
-            if 'MacId' in key or 'Code' in key:
+            if 'MacId' in key or 'Code' in key or 'Key' in key:
                 value = ':'.join(value.lstrip('0x')[i:i+2]
                                  for i in range(0, 15, 2))
+            elif value is not None and value.startswith('0x'):
+                value = int(value, 0)
             print(' ' * 3, key.ljust(keywidth, ' '), value)
 
 
@@ -110,6 +113,11 @@ def main():
                         'Available commands: {0}'.format(", ".join(COMMANDS)),
                         default='GET_DEVICE_DATA')
     args = parser.parse_args()
-    gw = Gateway(args.address)
-    display(gw.run_command(args.command))
+    try:
+        gw = Gateway(args.address)
+    except socket.error as e:
+        sys.stderr.write(
+            'Unable to connect to {0}. {1}\n'.format(args.address, e.strerror))
+        sys.exit(1)
+    display(gw.run_command(args.command)) 
     # print(gw.run_command_raw(args.command))
