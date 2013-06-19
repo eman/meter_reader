@@ -48,12 +48,13 @@ class Gateway(object):
         with closing(socket.create_connection((self.address, self.port))) as s:
             s.sendall(COMMAND_XML.format(command, self.mac_id).encode())
             cmd_output = s.makefile().read()
-        # responses come as multiple XML fragments. Enclose them in
-        # <response> to ensure valid XML.
-        return '<response>{0}</response>'.format(cmd_output)
+        return cmd_output
 
     def run_command(self, command):
-        return self.xml2dict(self.run_command_raw(command))
+        response = self.run_command_raw(command)
+        # responses come as multiple XML fragments. Enclose them in
+        # <response> to ensure valid XML.
+        return self.xml2dict('<response>{0}</response>'.format(response))
 
     @staticmethod
     def xml2dict(xml):
