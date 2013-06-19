@@ -109,6 +109,8 @@ def main():
     parser = argparse.ArgumentParser(description="Get data from Eagle"
                                                  " Energy Gateway")
     parser.add_argument('address', help='Eagle Engergy Gateway address')
+    parser.add_argument('-r', '--raw', help='Display Raw, unparsed, response '
+                                            'from the Gateway', action='store_true')
     parser.add_argument('-c', '--command', help='Command to send to gateway. '
                         'Available commands: {0}'.format(", ".join(COMMANDS)),
                         default='GET_DEVICE_DATA')
@@ -119,5 +121,7 @@ def main():
         sys.stderr.write(
             'Unable to connect to {0}. {1}\n'.format(args.address, e.strerror))
         sys.exit(1)
-    display(gw.run_command(args.command)) 
-    # print(gw.run_command_raw(args.command))
+    if args.raw:
+        print(gw.run_command_raw(args.command))
+    else:
+        display(gw.run_command(args.command)) 
