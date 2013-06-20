@@ -31,4 +31,4 @@ Commands can be specified with the '-c' option. For example::
 Raw data, as resturned by the gatway, can be viewed by using the '-r'
 option::
 
-    meter_reader -r GET_DEVICE_DATA < ip address > 
+    meter_reader -r -c GET_DEVICE_DATA < ip address > 
