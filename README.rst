@@ -1,5 +1,5 @@
 Meter Reader
-============================
+===============================================================================
 
 This is an early attempt at pulling data from an Eagle Energy Gateway.
 See the following for more: http://www.rainforestautomation.com
@@ -8,15 +8,16 @@ Meter Reader is not affiliated with the Eagle Energy Gateway or
 Rainforest Automation.
 
 Installation
-------------------------
+-------------------------------------------------------------------------------
 Clone the the repository or download the zip archive and run
 the following command::
 
     python setup.py install
 
 Usage
-------------------------
-.. code-block::
+-------------------------------------------------------------------------------
+Meter Reader is intended to be used as a library for other applications
+but it does contain a command line application called mr::
 
     mr < ip address >
 
@@ -31,4 +32,17 @@ Commands can be specified with the '-c' option. For example::
 Raw data, as returned by the gatway, can be viewed by using the '-r'
 option::
 
-    mr -r -c GET_DEVICE_DATA < ip address > 
+    mr -r -c GET_DEVICE_DATA < ip address >
+
+Including meter_reader in an application
+-------------------------------------------------------------------------------
+.. code-block:: python
+
+    from meter_reader import Gateway
+
+    GATEWAY_ADDRESS = '192.168.1.10'
+
+    gw = Gateway(GATEWAY_ADDRESS)
+    response = gw.run_command('GET_DEVICE_DATA')
+    print 'Network Info'
+    print response['NetworkInfo']
