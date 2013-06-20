@@ -18,7 +18,7 @@ Usage
 ------------------------
 .. code-block::
 
-    meter_reader < ip address >
+    mr < ip address >
 
 This will run the LIST_DEVICES devices command on the gateway and display
 a formatted response. Other commands, such as GET_DEVICE_DATA, will first
@@ -26,9 +26,9 @@ run the LIST_DEVICES command to determine the MAC address of the gateway.
 
 Commands can be specified with the '-c' option. For example::
 
-    meter_reader -c GET_DEVICE_DATA < ip address >
+    mr -c GET_DEVICE_DATA < ip address >
 
 Raw data, as returned by the gatway, can be viewed by using the '-r'
 option::
 
-    meter_reader -r -c GET_DEVICE_DATA < ip address > 
+    mr -r -c GET_DEVICE_DATA < ip address > 

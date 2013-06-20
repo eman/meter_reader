@@ -19,5 +19,5 @@ setup(name='Meter Reader',
       url='https://github.com/eman/meter_reader',
       py_modules=['meter_reader'],
       license="BSD",
-      scripts=['meter_reader'],
+      scripts=['mr'],
 )
