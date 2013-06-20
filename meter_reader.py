@@ -111,7 +111,7 @@ def main():
                                                  " Energy Gateway")
     parser.add_argument('address', help='Eagle Engergy Gateway address')
     parser.add_argument('-r', '--raw', help='Display Raw, unparsed, response '
-                                            'from the Gateway', action='store_true')
+                        'from the Gateway', action='store_true')
     parser.add_argument('-c', '--command', help='Command to send to gateway. '
                         'Available commands: {0}'.format(", ".join(COMMANDS)),
                         default='GET_DEVICE_DATA')
@@ -125,4 +125,4 @@ def main():
     if args.raw:
         print(gw.run_command_raw(args.command))
     else:
-        display(gw.run_command(args.command)) 
+        display(gw.run_command(args.command))
