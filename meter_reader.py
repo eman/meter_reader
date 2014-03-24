@@ -8,7 +8,7 @@ from the Eagle Energy Gateway.
 More information on the Eagle Engergy Gateway can be found here:
 http://www.rainforestautomation.com
 
-:copyright: (c) 2013 by Emmanuel Levijarvi
+:copyright: (c) 2014 by Emmanuel Levijarvi
 :license: BSD
 """
 
