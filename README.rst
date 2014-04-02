@@ -44,5 +44,8 @@ Including meter_reader in an application
 
     gw = Gateway(GATEWAY_ADDRESS)
     response = gw.run_command('GET_DEVICE_DATA')
-    print 'Network Info'
-    print response['NetworkInfo']
+    print('Network Info')
+    print(response['NetworkInfo'])
+
+    timestamp, demand = gw.get_instantaneous_demand()
+    print('Demand {0} at {1}'.format(demand, timestamp))
