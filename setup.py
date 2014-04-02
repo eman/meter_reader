@@ -17,6 +17,6 @@ setup(name='Meter Reader',
       author='Emmanuel Levijarvi',
       author_email='emansl@gmail.com',
       url='https://github.com/eman/meter_reader',
-      py_modules=['meter_reader'],
+      py_modules=['meter_reader', 'utc'],
       license="BSD",
       scripts=['mr'],)
