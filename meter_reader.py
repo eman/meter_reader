@@ -58,7 +58,7 @@ class Gateway(object):
         self.address = (address, port)
         self.timeout = socket.getdefaulttimeout()
         self.mac_id = '0xffffffffffffffff'
-        devices = self.run_command('LIST_DEVICES')
+        devices = self.run_command('LIST_DEVICES', convert=False)
         self.mac_id = devices['DeviceInfo']['DeviceMacId']
 
     def run_command_raw(self, command):
@@ -67,14 +67,15 @@ class Gateway(object):
             cmd_output = s.makefile().read()
         return cmd_output
 
-    def run_command(self, command):
+    def run_command(self, command, convert=True):
         try:
             response = self.run_command_raw(command)
         except socket.error as e:
             raise GatewayError(self.address, command, e.strerror, e.errno)
         # responses come as multiple XML fragments. Enclose them in
         # <response> to ensure valid XML.
-        return self.xml2dict('<response>{0}</response>'.format(response))
+        return self.xml2dict('<response>{0}</response>'.format(response),
+                             convert)
 
     @staticmethod
     def xml2dict(xml, convert=True):
@@ -121,10 +122,10 @@ class Gateway(object):
 def convert_data(key, value):
     if value is None:
         return None
-    # if 'MacId' in key or 'Code' in key or 'Key' in key:
-    #     len_ = 15
-    if key == 'MeterMacId':
-        len_ = 13
+    if 'MacId' in key or 'Code' in key or 'Key' in key:
+        len_ = 15
+        if key == 'MeterMacId':
+            len_ = 13
         return ':'.join(value.lstrip('0x')[i:i+2] for i in range(0, len_, 2))
     if key == 'TimeStamp':
         ts = (BEGINNING_OF_TIME + timedelta(0, int(value, 0)))
@@ -143,7 +144,6 @@ def display(output):
     for section in output:
         print(section)
         for key, value in list(output[section].items()):
-            # value = convert_data(key, value)
             print(' ' * 3, key.ljust(keywidth, ' '), value)
 
 
