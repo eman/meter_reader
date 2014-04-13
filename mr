@@ -4,7 +4,7 @@
 :license: BSD
 """
 
-import meter_reader
+from meter_reader import meter_reader
 
 if __name__ == "__main__":
     meter_reader.main()

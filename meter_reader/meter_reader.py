@@ -25,9 +25,9 @@ try:
 except ImportError:
     import io as StringIO
 
-from utc import UTC
+from meter_reader import utc
 
-utctz = UTC()
+utctz = utc.UTC() 
 BEGINNING_OF_TIME = datetime(2000, 1, 1, tzinfo=utctz)
 
 DEFAULT_PORT = 5002

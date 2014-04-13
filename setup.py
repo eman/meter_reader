@@ -11,12 +11,12 @@ from the Eagle Energy Gateway.
 
 from distutils.core import setup
 
-setup(name='Meter Reader',
+setup(name='meter_reader',
       version='1.0',
       description='',
       author='Emmanuel Levijarvi',
       author_email='emansl@gmail.com',
       url='https://github.com/eman/meter_reader',
-      py_modules=['meter_reader', 'utc'],
+      packages=['meter_reader'],
       license="BSD",
       scripts=['mr'],)
