@@ -1,7 +1,8 @@
 Meter Reader
 ===============================================================================
 
-This is an early attempt at pulling data from an Eagle Energy Gateway.
+Meter Reader is a client library and command line client for retrieving
+data from the Eagle Energy Gateway.
 See the following for more: http://www.rainforestautomation.com
 
 Meter Reader is not affiliated with the Eagle Energy Gateway or

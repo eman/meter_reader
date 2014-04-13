@@ -2,8 +2,8 @@
 Meter Reader
 ----------------------
 
-Meter Reader is a command line client for retrieving data
-from the Eagle Energy Gateway.
+Meter Reader is a client library and command line client for retrieving
+data from the Eagle Energy Gateway.
 
 :copyright: (c) 2014 by Emmanuel Levijarvi
 :license: BSD
