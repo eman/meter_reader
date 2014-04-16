@@ -23,7 +23,8 @@ BEGINNING_OF_TIME = datetime(2000, 1, 1, tzinfo=utctz)
 
 DEFAULT_PORT = 5002
 COMMANDS = ['LIST_DEVICES', 'GET_DEVICE_DATA', 'GET_INSTANTANEOUS_DEMAND',
-            'GET_DEMAND_VALUES', 'GET_SUMMATION_VALUES']
+            'GET_DEMAND_VALUES', 'GET_SUMMATION_VALUES',
+            'GET_FAST_POLL_STATUS']
 
 COMMAND_XML = '''
 <LocalCommand>
@@ -115,7 +116,7 @@ def convert_data(key, value):
         return None
     if 'MacId' in key or 'Code' in key or 'Key' in key:
         len_ = 15
-        if key == 'MeterMacId':
+        if key == 'MeterMacId' or key == 'CoordMacId':
             len_ = 13
         return ':'.join(value.lstrip('0x')[i:i+2] for i in range(0, len_, 2))
     if key == 'TimeStamp':
