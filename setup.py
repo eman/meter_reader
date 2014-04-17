@@ -13,7 +13,7 @@ from distutils.core import setup
 
 setup(name='meter-reader',
       version='1.0',
-      description='',
+      description='Client Library for Eagle Energy Gateway',
       author='Emmanuel Levijarvi',
       author_email='emansl@gmail.com',
       url='https://github.com/eman/meter_reader',
