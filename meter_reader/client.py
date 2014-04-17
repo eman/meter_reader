@@ -37,6 +37,11 @@ def main():
     parser.add_argument('-c', '--command', help='Command to send to gateway. '
                         'Available commands: {0}'.format(", ".join(COMMANDS)),
                         default='GET_DEVICE_DATA')
+    parser.add_argument('-i', '--interval', help='Total time period for '
+                        'which samples are being requested. hour | day | week',
+                        default='')
+    parser.add_argument('-f', '--frequency', help="Requested number of seconds"
+                        " between samples.", default=0)
     args = parser.parse_args()
     try:
         gw = Gateway(args.address)
@@ -44,6 +49,6 @@ def main():
         sys.stderr.write(str(e) + '\n')
         sys.exit(1)
     if args.raw:
-        print(gw.run_command_raw(args.command))
+        print(gw.run_command_raw(args.command, interval=args.interval, frequency=args.frequency))
     else:
-        display(gw.run_command(args.command))
+        display(gw.run_command(args.command, interval=args.interval, frequency=args.frequency))

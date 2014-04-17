@@ -30,6 +30,8 @@ COMMAND_XML = '''
 <LocalCommand>
     <Name>{0}</Name>
     <MacId>{1}</MacId>
+    <Interval>{2}</Interval>
+    <Frequency>{3}</Frequency>
 </LocalCommand>
 '''
 
@@ -50,18 +52,20 @@ class Gateway(object):
         self.address = (address, port)
         self.timeout = socket.getdefaulttimeout()
         self.mac_id = '0xffffffffffffffff'
-        devices = self.run_command('LIST_DEVICES', convert=False)
+        devices = self.run_command('LIST_DEVICES', interval='day', convert=False)
         self.mac_id = devices['DeviceInfo']['DeviceMacId']
 
-    def run_command_raw(self, command):
+    def run_command_raw(self, command, interval='', frequency=0):
         with closing(socket.create_connection(self.address, self.timeout)) as s:
-            s.sendall(COMMAND_XML.format(command, self.mac_id).encode('utf-8'))
+            command = COMMAND_XML.format(command, self.mac_id,
+                                         interval, frequency)
+            s.sendall(command.encode('utf-8'))
             cmd_output = s.makefile().read()
         return cmd_output
 
-    def run_command(self, command, convert=True):
+    def run_command(self, command, interval='', frequency=0, convert=True):
         try:
-            response = self.run_command_raw(command)
+            response = self.run_command_raw(command, interval, frequency)
         except socket.error as e:
             raise GatewayError(self.address, command, e.strerror, e.errno)
         # responses come as multiple XML fragments. Enclose them in

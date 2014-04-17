@@ -2,7 +2,7 @@
 Meter Reader
 ----------------------
 
-Meter Reader is a client library and command line client for retrieving
+Meter Reader is a client library and command line tool for retrieving
 data from the Eagle Energy Gateway.
 
 :copyright: (c) 2014 by Emmanuel Levijarvi
@@ -11,7 +11,7 @@ data from the Eagle Energy Gateway.
 
 from distutils.core import setup
 
-setup(name='meter_reader',
+setup(name='meter-reader',
       version='1.0',
       description='',
       author='Emmanuel Levijarvi',
