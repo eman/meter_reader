@@ -11,11 +11,6 @@ import argparse
 from meter_reader.gateway import Gateway, GatewayError, COMMANDS
 
 
-COMMANDS = ['LIST_DEVICES', 'GET_DEVICE_DATA', 'GET_INSTANTANEOUS_DEMAND',
-            'GET_DEMAND_VALUES', 'GET_SUMMATION_VALUES',
-            'GET_FAST_POLL_STATUS']
-
-
 def display(output):
     keywidth = 0
     for section in output:
