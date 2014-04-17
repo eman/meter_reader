@@ -36,19 +36,26 @@ def main():
                         'from the Gateway', action='store_true')
     parser.add_argument('-c', '--command', help='Command to send to gateway. '
                         'Available commands: {0}'.format(", ".join(COMMANDS)),
-                        default='GET_DEVICE_DATA')
+                        default='GET_DEVICE_DATA', dest='Name')
     parser.add_argument('-i', '--interval', help='Total time period for '
-                        'which samples are being requested. hour | day | week',
-                        default='')
+                        'which samples are being requested. hour | day | week')
     parser.add_argument('-f', '--frequency', help="Requested number of seconds"
-                        " between samples.", default=0)
+                        " between samples.")
+    parser.add_argument('-s', '--start-time', dest='StartTime')
+    parser.add_argument('-e', '--end-time', dest="EndTime")
+    parser.add_argument('-d', '--duration')
+    parser.add_argument('--get-instant-demand', action='store_true')
     args = parser.parse_args()
     try:
         gw = Gateway(args.address)
     except GatewayError as e:
         sys.stderr.write(str(e) + '\n')
         sys.exit(1)
+    if args.get_instant_demand:
+        ts, demand = (gw.get_instantaneous_demand())
+        print(ts.isoformat(), str(demand) + 'kW')
+        sys.exit(0)
     if args.raw:
-        print(gw.run_command_raw(args.command, interval=args.interval, frequency=args.frequency))
+        print(gw.run_command_raw(**vars(args)))
     else:
-        display(gw.run_command(args.command, interval=args.interval, frequency=args.frequency))
+        display(gw.run_command(**vars(args)))

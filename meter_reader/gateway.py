@@ -9,6 +9,7 @@ import sys
 import socket
 from datetime import timedelta, datetime
 import xml.etree.ElementTree as ET
+from xml.dom import minidom
 from contextlib import closing
 # python 2/3 compatibilty fix-up
 try:
@@ -26,14 +27,6 @@ COMMANDS = ['LIST_DEVICES', 'GET_DEVICE_DATA', 'GET_INSTANTANEOUS_DEMAND',
             'GET_DEMAND_VALUES', 'GET_SUMMATION_VALUES',
             'GET_FAST_POLL_STATUS']
 
-COMMAND_XML = '''
-<LocalCommand>
-    <Name>{0}</Name>
-    <MacId>{1}</MacId>
-    <Interval>{2}</Interval>
-    <Frequency>{3}</Frequency>
-</LocalCommand>
-'''
 
 class GatewayError(Exception):
     def __init__(self, address, command, error='', code=None):
@@ -47,27 +40,38 @@ class GatewayError(Exception):
                                                           self.address[1],
                                                           self.error)
 
+
 class Gateway(object):
     def __init__(self, address, port=DEFAULT_PORT):
         self.address = (address, port)
         self.timeout = socket.getdefaulttimeout()
-        self.mac_id = '0xffffffffffffffff'
-        devices = self.run_command('LIST_DEVICES', interval='day', convert=False)
+        self.mac_id = None
+        devices = self.run_command(Name='LIST_DEVICES', convert=False)
         self.mac_id = devices['DeviceInfo']['DeviceMacId']
 
-    def run_command_raw(self, command, interval='', frequency=0):
+    def generate_command_xml(self, **kwargs):
+        c = ET.Element('LocalCommand')
+        for tag, value in kwargs.items():
+            if tag in ('raw', 'address') or value is None:
+                continue
+            ET.SubElement(c, tag).text = value
+        if self.mac_id is not None:
+            ET.SubElement(c, 'MacID').text = self.mac_id
+        string_repr = ET.tostring(c, encoding='utf-8')
+        return minidom.parseString(string_repr).toprettyxml(indent="  ")
+
+    def run_command_raw(self, **kwargs):
         with closing(socket.create_connection(self.address, self.timeout)) as s:
-            command = COMMAND_XML.format(command, self.mac_id,
-                                         interval, frequency)
-            s.sendall(command.encode('utf-8'))
+            s.sendall(self.generate_command_xml(**kwargs))
             cmd_output = s.makefile().read()
         return cmd_output
 
-    def run_command(self, command, interval='', frequency=0, convert=True):
+    def run_command(self, convert=True, **kwargs):
         try:
-            response = self.run_command_raw(command, interval, frequency)
+            response = self.run_command_raw(**kwargs)
         except socket.error as e:
-            raise GatewayError(self.address, command, e.strerror, e.errno)
+            raise GatewayError(self.address, kwargs['Name'],
+                               e.strerror, e.errno)
         # responses come as multiple XML fragments. Enclose them in
         # <response> to ensure valid XML.
         return self.xml2dict('<response>{0}</response>'.format(response),
@@ -110,7 +114,7 @@ class Gateway(object):
                     path.pop()
 
     def get_instantaneous_demand(self):
-        resp = self.run_command('GET_DEVICE_DATA')['InstantaneousDemand']
+        resp = self.run_command(name='GET_DEVICE_DATA')['InstantaneousDemand']
         demand = float(resp['Demand']) * resp['Multiplier'] / resp['Divisor']
         return (resp['TimeStamp'], demand)
 
