@@ -23,10 +23,10 @@ utctz = utc.UTC()
 BEGINNING_OF_TIME = datetime(2000, 1, 1, tzinfo=utctz)
 
 DEFAULT_PORT = 5002
-COMMANDS = ['LIST_DEVICES', 'GET_DEVICE_DATA', 'GET_INSTANTANEOUS_DEMAND',
+COMMANDS = ('LIST_DEVICES', 'GET_DEVICE_DATA', 'GET_INSTANTANEOUS_DEMAND',
             'GET_DEMAND_VALUES', 'GET_SUMMATION_VALUES',
-            'GET_FAST_POLL_STATUS']
-
+            'GET_FAST_POLL_STATUS')
+SUPPORTED_ARGS = ('INTERVAL', 'FREQUENCY', 'STARTTIME', 'ENDTIME', 'DURATION', 'NAME')
 
 class GatewayError(Exception):
     def __init__(self, address, command, error='', code=None):
@@ -52,7 +52,7 @@ class Gateway(object):
     def generate_command_xml(self, **kwargs):
         c = ET.Element('LocalCommand')
         for tag, value in kwargs.items():
-            if tag in ('raw', 'address') or value is None:
+            if tag.upper() not in SUPPORTED_ARGS or value is None:
                 continue
             ET.SubElement(c, tag).text = value
         if self.mac_id is not None:
@@ -128,8 +128,7 @@ def convert_data(key, value):
             len_ = 13
         return ':'.join(value.lstrip('0x')[i:i+2] for i in range(0, len_, 2))
     if key == 'TimeStamp':
-        ts = (BEGINNING_OF_TIME + timedelta(0, int(value, 0)))
-        return ts
+        return BEGINNING_OF_TIME + timedelta(0, int(value, 0))
     if isinstance(value, str) and value.startswith('0x'):
         return int(value, 0)
     return value
