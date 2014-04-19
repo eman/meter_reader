@@ -11,6 +11,7 @@ from datetime import timedelta, datetime
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from contextlib import closing
+import collections
 # python 2/3 compatibilty fix-up
 try:
     import StringIO
@@ -85,15 +86,19 @@ class Gateway(object):
                 if element.tag == 'response':
                     continue
                 if event == 'start':
-                    if element.text is None or element.text.strip() != '':
+                    if element.text == 'Interval data start':
+                        interval = True
+                    elif element.text is None or element.text.strip() != '':
                         if convert:
                             value = convert_data(element.tag, element.text)
                         else:
                             value = element.text
-                        key = path[-1].keys()[0]
-                        path[-1][key].update({element.tag: value})
+                        key = next(reversed(path[-1]))
+                        path[-1][key][element.tag] = value
                     else:
-                        path.append({element.tag: {}})
+                        new_level = collections.OrderedDict()
+                        new_level[element.tag] = collections.OrderedDict()
+                        path.append(new_level)
                 elif element.text is not None and element.text.strip() == '':
                     later = path.pop()
                     path[-1].update(later)
