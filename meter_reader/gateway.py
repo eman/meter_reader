@@ -57,7 +57,7 @@ class Gateway(object):
                 continue
             if tag.upper() in ('STARTTIME', 'ENDTIME'):
                 value = hex((value - BEGINNING_OF_TIME).seconds)
-            elif tag.upper() == 'FREQUENCY':
+            elif tag.upper() in ('FREQUENCY', 'DURATION'):
                 value = hex(value)
             ET.SubElement(c, tag).text = value
         if self.mac_id is not None:

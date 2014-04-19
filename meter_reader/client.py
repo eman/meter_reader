@@ -38,10 +38,10 @@ def main():
     parser.add_argument('-i', '--interval', help='Total time period for '
                         'which samples are being requested. hour | day | week')
     parser.add_argument('-f', '--frequency', help="Requested number of seconds"
-                        " between samples.")
+                        " between samples.", type=int)
     parser.add_argument('-s', '--start-time', dest='StartTime')
     parser.add_argument('-e', '--end-time', dest="EndTime")
-    parser.add_argument('-d', '--duration')
+    parser.add_argument('-d', '--duration', type=int)
     parser.add_argument('--get-instant-demand', action='store_true')
     args = parser.parse_args()
     try:
