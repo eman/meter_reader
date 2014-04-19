@@ -80,38 +80,24 @@ class Gateway(object):
     @staticmethod
     def xml2dict(xml, convert=True):
         with closing(StringIO.StringIO(xml)) as f:
-            path = []
-            response = {}
+            path = [{}]
             for event, element in ET.iterparse(f, events=('start', 'end')):
                 if element.tag == 'response':
                     continue
                 if event == 'start':
-                    path.append(element.tag)
                     if element.text is None or element.text.strip() != '':
                         if convert:
-                            data = convert_data(element.tag, element.text)
+                            value = convert_data(element.tag, element.text)
                         else:
-                            data = element.text
-                        try:
-                            response[path[0]][element.tag] = data
-                        except KeyError:
-                            response[path[0]] = {element.tag: data}
-                else:
-                    path.pop()
-        return response
-
-    @staticmethod
-    def xml2dict2(xml):
-        with closing(StringIO.StringIO(xml)) as f:
-            path = []
-            response = []
-            for event, element in ET.iterparse(f, events=('start', 'end')):
-                if element.tag == "response":
-                    continue
-                if event == 'start':
-                    path.append(element.tag)
-                else:
-                    path.pop()
+                            value = element.text
+                        key = path[-1].keys()[0]
+                        path[-1][key].update({element.tag: value})
+                    else:
+                        path.append({element.tag: {}})
+                elif element.text is not None and element.text.strip() == '':
+                    later = path.pop()
+                    path[-1].update(later)
+        return path[0]
 
     def get_instantaneous_demand(self):
         resp = self.run_command(name='GET_DEVICE_DATA')['InstantaneousDemand']
