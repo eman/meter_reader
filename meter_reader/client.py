@@ -13,6 +13,7 @@ from meter_reader.gateway import Gateway, GatewayError, COMMANDS
 
 def display(output):
     if isinstance(output, list):
+        sys.stdout.write(', '.join(output[0]) + '\n')
         [print(', '.join([str(v) for v in i.values()])) for i in output]
     else: 
         keywidth = 0
@@ -49,6 +50,7 @@ def main():
     except GatewayError as e:
         sys.stderr.write(str(e) + '\n')
         sys.exit(1)
+    sys.stderr.write('\n')
     if args.get_instant_demand:
         ts, demand = (gw.get_instantaneous_demand())
         print(str(ts), str(demand) + 'kW')
