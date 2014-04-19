@@ -29,7 +29,43 @@ run the LIST_DEVICES command to determine the MAC address of the gateway.
 Commands can be specified with the '-c' option. For example::
 
     $ mr -c GET_DEVICE_DATA < ip address >
+    
+    MessageCluster
+        DeviceMacId          xx:xx:xx:xx:xx:xx:xx:xx
+        MeterMacId           xx:xx:xx:xx:xx:xx:xx
+        TimeStamp            0
+        Id                   0
+        Priority             None
+        Text                 None
+        ConfirmationRequired N
+        Confirmed            N
+        Read                 Y
+        Queue                active
+    CurrentSummation
+        DeviceMacId          xx:xx:xx:xx:xx:xx:xx:xx
+        MeterMacId           xx:xx:xx:xx:xx:xx:xx
+        TimeStamp            2014-04-19 16:01:22+00:00
+        SummationDelivered   12949746
+        SummationReceived    0
+        Multiplier           1
+        Divisor              1000
+        DigitsRight          3
+        DigitsLeft           15
+        SuppressLeadingZero  Y
+    NetworkInfo
+    ...
+
+.. code-block::
+    
     $ mr -c GET_SUMMATION_VALUES < ip address >
+    
+    2014-04-18 16:30:00+00:00, Summation, 0.350
+    2014-04-18 17:30:00+00:00, Summation, 0.322
+    2014-04-18 18:30:00+00:00, Summation, 0.193
+    2014-04-18 19:30:00+00:00, Summation, 0.285
+    2014-04-18 20:30:00+00:00, Summation, 0.286
+    2014-04-18 21:30:00+00:00, Summation, 0.351
+    ...
     
 There are two ways to retrieve instantaneous demand:
 
@@ -56,15 +92,9 @@ response before displaying it.
   
 .. code-block::
 
-    $ mr -c GET_SUMMATION_VALUES < ip address >
+    $ mr --get-instant-demand < ip address >
     
-    2014-04-18 16:30:00+00:00, Summation, 0.350
-    2014-04-18 17:30:00+00:00, Summation, 0.322
-    2014-04-18 18:30:00+00:00, Summation, 0.193
-    2014-04-18 19:30:00+00:00, Summation, 0.285
-    2014-04-18 20:30:00+00:00, Summation, 0.286
-    2014-04-18 21:30:00+00:00, Summation, 0.351
-    ...
+    2014-04-19 15:58:39+00:00 0.292kW
 
 Raw and unformatted data returned by the gatway, can be viewed by using the
 '-r' option::
