@@ -12,15 +12,18 @@ from meter_reader.gateway import Gateway, GatewayError, COMMANDS
 
 
 def display(output):
-    keywidth = 0
-    for section in output:
-        for key in output[section]:
-            if len(key) > keywidth:
-                keywidth = len(key)
-    for section in output:
-        print(section)
-        for key, value in list(output[section].items()):
-            print(' ' * 3, key.ljust(keywidth, ' '), value)
+    if isinstance(output, list):
+        [print(', '.join([str(v) for v in i.values()])) for i in output]
+    else: 
+        keywidth = 0
+        for section in output:
+            for key in output[section]:
+                if len(key) > keywidth:
+                    keywidth = len(key)
+        for section in output:
+            print(section)
+            for key, value in list(output[section].items()):
+                print(' ' * 3, key.ljust(keywidth, ' '), value)
 
 
 def main():

@@ -58,12 +58,12 @@ class Gateway(object):
             ET.SubElement(c, tag).text = value
         if self.mac_id is not None:
             ET.SubElement(c, 'MacID').text = self.mac_id
-        string_repr = ET.tostring(c, encoding='utf-8')
-        return minidom.parseString(string_repr).toprettyxml(indent="  ")
+        md = minidom.parseString(ET.tostring(c, encoding='utf-8'))
+        return md.toprettyxml(indent="  ")
 
     def run_command_raw(self, **kwargs):
         with closing(socket.create_connection(self.address, self.timeout)) as s:
-            s.sendall(self.generate_command_xml(**kwargs))
+            s.sendall(self.generate_command_xml(**kwargs).encode('utf-8'))
             cmd_output = s.makefile().read()
         return cmd_output
 
@@ -75,8 +75,12 @@ class Gateway(object):
                                e.strerror, e.errno)
         # responses come as multiple XML fragments. Enclose them in
         # <response> to ensure valid XML.
-        return self.xml2dict('<response>{0}</response>'.format(response),
-                             convert)
+        if 'Interval data start' in response:
+            return self.xml2list('<response>{0}</response>'.format(response),
+                                 convert)
+        else:
+            return self.xml2dict('<response>{0}</response>'.format(response),
+                                 convert)
 
     @staticmethod
     def xml2dict(xml, convert=True):
@@ -86,9 +90,7 @@ class Gateway(object):
                 if element.tag == 'response':
                     continue
                 if event == 'start':
-                    if element.text == 'Interval data start':
-                        interval = True
-                    elif element.text is None or element.text.strip() != '':
+                    if element.text is None or element.text.strip() != '':
                         if convert:
                             value = convert_data(element.tag, element.text)
                         else:
@@ -103,6 +105,24 @@ class Gateway(object):
                     later = path.pop()
                     path[-1].update(later)
         return path[0]
+
+    @staticmethod
+    def xml2list(xml, convert=True):
+        with closing(StringIO.StringIO(xml)) as f:
+            response  = []
+            for event, element in ET.iterparse(f, events=('start', 'end')):
+                if element.tag in ('Info', 'Text', 'response'):
+                    continue
+                if event == 'start' and (element.text is not None and element.text.strip() == ''):
+                    response.append({})
+                if event == 'end' and (element.text is None or element.text.strip() != ''):
+                    if convert:
+                        value = convert_data(element.tag, element.text)
+                    else:
+                        value = element.text 
+                    response[-1][element.tag] = value
+        return response
+                 
 
     def get_instantaneous_demand(self):
         resp = self.run_command(name='GET_DEVICE_DATA')['InstantaneousDemand']
