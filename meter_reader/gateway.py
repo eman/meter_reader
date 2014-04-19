@@ -55,6 +55,10 @@ class Gateway(object):
         for tag, value in kwargs.items():
             if tag.upper() not in SUPPORTED_ARGS or value is None:
                 continue
+            if tag.upper() in ('STARTTIME', 'ENDTIME'):
+                value = hex((value - BEGINNING_OF_TIME).seconds)
+            elif tag.upper() == 'FREQUENCY':
+                value = hex(value)
             ET.SubElement(c, tag).text = value
         if self.mac_id is not None:
             ET.SubElement(c, 'MacID').text = self.mac_id
@@ -138,7 +142,7 @@ def convert_data(key, value):
         if key == 'MeterMacId' or key == 'CoordMacId':
             len_ = 13
         return ':'.join(value.lstrip('0x')[i:i+2] for i in range(0, len_, 2))
-    if key == 'TimeStamp':
+    if key.upper() in ('TIMESTAMP', 'ENDTIME') and int(value, 0):
         return BEGINNING_OF_TIME + timedelta(0, int(value, 0))
     if isinstance(value, str) and value.startswith('0x'):
         return int(value, 0)
