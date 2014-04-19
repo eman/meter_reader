@@ -13,14 +13,14 @@ Installation
 Clone the the repository or download the zip archive and run
 the following command::
 
-    python setup.py install
+    $ python setup.py install
 
 Usage
 -------------------------------------------------------------------------------
 Meter Reader is intended to be used as a library for other applications
 but it does contain a command line application called mr::
 
-    mr < ip address >
+    $ mr < ip address >
 
 This will run the LIST_DEVICES devices command on the gateway and display
 a formatted response. Other commands, such as GET_DEVICE_DATA, will first
@@ -28,12 +28,48 @@ run the LIST_DEVICES command to determine the MAC address of the gateway.
 
 Commands can be specified with the '-c' option. For example::
 
-    mr -c GET_DEVICE_DATA < ip address >
+    $ mr -c GET_DEVICE_DATA < ip address >
+    $ mr -c GET_SUMMATION_VALUES < ip address >
+    
+There are two ways to retrieve instantaneous demand:
 
-Raw data, as returned by the gatway, can be viewed by using the '-r'
-option::
+1. Send the GET_INSTANTANEOUS_DEMAND command directly to the gateway. This
+   will return a nearly raw response from the gateway (formatting is applied).
+   
+.. code-block::
+ 
+    $ mr -c GET_INSTANTANEOUS_DEMAND < ip address >
+        
+        InstantaneousDemand
+        DeviceMacId         xx:xx:xx:xx:xx:xx:xx:xx
+        MeterMacId          xx:xx:xx:xx:xx:xx:xx
+        TimeStamp           2014-04-19 15:35:27+00:00
+        Demand              297
+        Multiplier          1
+        Divisor             1000
+        DigitsRight         3
+        DigitsLeft          15
+        SuppressLeadingZero Y
 
-    mr -r -c GET_DEVICE_DATA < ip address >
+2. Supply the `--get-instant-demand` argument. This will post-process the
+response before displaying it.
+  
+.. code-block::
+
+    $ mr -c GET_SUMMATION_VALUES < ip address >
+    
+    2014-04-18 16:30:00+00:00, Summation, 0.350
+    2014-04-18 17:30:00+00:00, Summation, 0.322
+    2014-04-18 18:30:00+00:00, Summation, 0.193
+    2014-04-18 19:30:00+00:00, Summation, 0.285
+    2014-04-18 20:30:00+00:00, Summation, 0.286
+    2014-04-18 21:30:00+00:00, Summation, 0.351
+    ...
+
+Raw and unformatted data returned by the gatway, can be viewed by using the
+'-r' option::
+
+    $ mr -r -c GET_DEVICE_DATA < ip address >
 
 Including meter_reader in an application
 -------------------------------------------------------------------------------
