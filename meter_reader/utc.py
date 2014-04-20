@@ -4,7 +4,7 @@ from datetime import timedelta, tzinfo
 # library documentation
 ZERO = timedelta(0)
 
-# A UTC class. 
+# A UTC class.
 class UTC(tzinfo):
     """UTC"""
     def __repr__(self):
@@ -18,5 +18,6 @@ class UTC(tzinfo):
 
     def dst(self, dt):
         return ZERO
+
 
 utc = UTC()

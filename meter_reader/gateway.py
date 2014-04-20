@@ -5,7 +5,6 @@ Meter Reader
 :license: BSD
 """
 
-import sys
 import socket
 from datetime import timedelta, datetime
 import xml.etree.ElementTree as ET
@@ -20,14 +19,16 @@ except ImportError:
 
 from meter_reader import utc
 
-utctz = utc.UTC() 
+utctz = utc.UTC()
 BEGINNING_OF_TIME = datetime(2000, 1, 1, tzinfo=utctz)
 
 DEFAULT_PORT = 5002
 COMMANDS = ('LIST_DEVICES', 'GET_DEVICE_DATA', 'GET_INSTANTANEOUS_DEMAND',
             'GET_DEMAND_VALUES', 'GET_SUMMATION_VALUES',
             'GET_FAST_POLL_STATUS')
-SUPPORTED_ARGS = ('INTERVAL', 'FREQUENCY', 'STARTTIME', 'ENDTIME', 'DURATION', 'NAME')
+SUPPORTED_ARGS = ('INTERVAL', 'FREQUENCY', 'STARTTIME', 'ENDTIME', 'DURATION',
+                  'NAME')
+
 
 class GatewayError(Exception):
     def __init__(self, address, command, error='', code=None):
@@ -66,7 +67,8 @@ class Gateway(object):
         return md.toprettyxml(indent="  ")
 
     def run_command_raw(self, **kwargs):
-        with closing(socket.create_connection(self.address, self.timeout)) as s:
+        with closing(socket.create_connection(self.address,
+                                              self.timeout)) as s:
             s.sendall(self.generate_command_xml(**kwargs).encode('utf-8'))
             cmd_output = s.makefile().read()
         return cmd_output
@@ -113,20 +115,21 @@ class Gateway(object):
     @staticmethod
     def xml2list(xml, convert=True):
         with closing(StringIO.StringIO(xml)) as f:
-            response  = []
+            response = []
             for event, element in ET.iterparse(f, events=('start', 'end')):
                 if element.tag in ('Info', 'Text', 'response'):
                     continue
-                if event == 'start' and (element.text is not None and element.text.strip() == ''):
+                if event == 'start' and (element.text is not None and
+                                         element.text.strip() == ''):
                     response.append({})
-                if event == 'end' and (element.text is None or element.text.strip() != ''):
+                if event == 'end' and (element.text is None or
+                                       element.text.strip() != ''):
                     if convert:
                         value = convert_data(element.tag, element.text)
                     else:
-                        value = element.text 
+                        value = element.text
                     response[-1][element.tag] = value
         return response
-                 
 
     def get_instantaneous_demand(self):
         resp = self.run_command(name='GET_DEVICE_DATA')['InstantaneousDemand']

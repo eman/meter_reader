@@ -15,7 +15,7 @@ def display(output):
     if isinstance(output, list):
         sys.stdout.write(', '.join(output[0]) + '\n')
         [print(', '.join([str(v) for v in i.values()])) for i in output]
-    else: 
+    else:
         keywidth = 0
         for section in output:
             for key in output[section]:
