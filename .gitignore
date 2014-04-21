@@ -1,4 +1,6 @@
 __pycache__
 *.pyc
 build
+dist
 MANIFEST
+meter_reader.egg-info

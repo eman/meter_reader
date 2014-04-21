@@ -9,6 +9,7 @@ from __future__ import print_function
 import sys
 import argparse
 from meter_reader.gateway import Gateway, GatewayError, COMMANDS
+from meter_reader import __version__
 
 
 def display(output):
@@ -28,9 +29,11 @@ def display(output):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Get data from Eagle"
-                                                 " Energy Gateway")
+    parser = argparse.ArgumentParser(prog='mr',
+        description="Get data from Eagle Energy Gateway")
     parser.add_argument('address', help='Eagle Engergy Gateway address')
+    parser.add_argument('-V', '--version', action='version',
+                        version='mr {0}'.format(__version__))
     parser.add_argument('-r', '--raw', help='Display Raw, unparsed, response '
                         'from the Gateway', action='store_true')
     parser.add_argument('-c', '--command', help='Command to send to gateway. '
