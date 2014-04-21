@@ -22,14 +22,14 @@ but it does contain a command line application called mr::
 
     $ mr < ip address >
 
-This will run the LIST_DEVICES devices command on the gateway and display
-a formatted response. Other commands, such as GET_DEVICE_DATA, will first
-run the LIST_DEVICES command to determine the MAC address of the gateway.
+This will run the ``LIST_DEVICES`` devices command on the gateway and display
+a formatted response. Other commands, such as ``GET_DEVICE_DATA``, will first
+run the ``LIST_DEVICES`` command to determine the MAC address of the gateway.
 
 Commands can be specified with the '-c' option. For example::
 
     $ mr -c GET_DEVICE_DATA < ip address >
-    
+
     MessageCluster
         DeviceMacId          xx:xx:xx:xx:xx:xx:xx:xx
         MeterMacId           xx:xx:xx:xx:xx:xx:xx
@@ -56,9 +56,9 @@ Commands can be specified with the '-c' option. For example::
     ...
 
 .. code-block::
-    
+
     $ mr -c GET_SUMMATION_VALUES < ip address >
-    
+
     2014-04-18 16:30:00+00:00, Summation, 0.350
     2014-04-18 17:30:00+00:00, Summation, 0.322
     2014-04-18 18:30:00+00:00, Summation, 0.193
@@ -66,16 +66,16 @@ Commands can be specified with the '-c' option. For example::
     2014-04-18 20:30:00+00:00, Summation, 0.286
     2014-04-18 21:30:00+00:00, Summation, 0.351
     ...
-    
+
 There are two ways to retrieve instantaneous demand:
 
-1. Send the GET_INSTANTANEOUS_DEMAND command directly to the gateway. This
+1. Send the ``GET_INSTANTANEOUS_DEMAND`` command directly to the gateway. This
    will return a nearly raw response from the gateway (formatting is applied).
-   
+
 .. code-block::
- 
+
     $ mr -c GET_INSTANTANEOUS_DEMAND < ip address >
-        
+
         InstantaneousDemand
         DeviceMacId         xx:xx:xx:xx:xx:xx:xx:xx
         MeterMacId          xx:xx:xx:xx:xx:xx:xx
@@ -87,13 +87,13 @@ There are two ways to retrieve instantaneous demand:
         DigitsLeft          15
         SuppressLeadingZero Y
 
-2. Supply the `--get-instant-demand` argument. This will post-process the
+2. Supply the ``--get-instant-demand`` argument. This will post-process the
 response before displaying it.
-  
+
 .. code-block::
 
     $ mr --get-instant-demand < ip address >
-    
+
     2014-04-19 15:58:39+00:00 0.292kW
 
 Raw and unformatted data returned by the gatway, can be viewed by using the
