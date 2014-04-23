@@ -11,6 +11,7 @@ Rainforest Automation.
 
 Installation
 -------------------------------------------------------------------------------
+.. code-block::
 
     $ pip install meter-reader
 
@@ -93,7 +94,7 @@ response before displaying it.
 
     $ mr --get-instant-demand < ip address >
 
-    2014-04-19 15:58:39+00:00 0.292kW
+    2014-04-19 15:58:39+00:00, 0.292kW
 
 Raw and unformatted data returned by the gatway, can be viewed by using the
 '-r' option::
