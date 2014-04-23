@@ -11,10 +11,8 @@ Rainforest Automation.
 
 Installation
 -------------------------------------------------------------------------------
-Clone the the repository or download the zip archive and run
-the following command::
 
-    $ python setup.py install
+    $ pip install meter-reader
 
 Usage
 -------------------------------------------------------------------------------
