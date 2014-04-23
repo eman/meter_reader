@@ -3,15 +3,16 @@ Meter Reader
 
 Meter Reader is a client library and command line client for retrieving
 nearly realtime energy usage data from a smart meter via the Eagle Energy
-Gateway.
-See the following for more: http://www.rainforestautomation.com
+Gateway. See
+`Rainforest Automation_ <http://www.rainforestautomation.com>`_ for more
+about the Eagle Gateway.
 
 Meter Reader is not affiliated with the Eagle Energy Gateway or
 Rainforest Automation.
 
 Installation
 -------------------------------------------------------------------------------
-.. code-block::
+::
 
     $ pip install meter-reader
 
@@ -55,7 +56,7 @@ Commands can be specified with the '-c' option. For example::
     NetworkInfo
     ...
 
-.. code-block::
+::
 
     $ mr -c GET_SUMMATION_VALUES < ip address >
 
@@ -72,7 +73,7 @@ There are two ways to retrieve instantaneous demand:
 1. Send the ``GET_INSTANTANEOUS_DEMAND`` command directly to the gateway. This
    will return a nearly raw response from the gateway (formatting is applied).
 
-.. code-block::
+::
 
     $ mr -c GET_INSTANTANEOUS_DEMAND < ip address >
 
@@ -88,9 +89,7 @@ There are two ways to retrieve instantaneous demand:
         SuppressLeadingZero Y
 
 2. Supply the ``--get-instant-demand`` argument. This will post-process the
-response before displaying it.
-
-.. code-block::
+response before displaying it.::
 
     $ mr --get-instant-demand < ip address >
 
@@ -103,7 +102,7 @@ Raw and unformatted data returned by the gatway, can be viewed by using the
 
 Including meter_reader in an application
 -------------------------------------------------------------------------------
-.. code-block:: python
+::
 
     from meter_reader import Gateway
 
