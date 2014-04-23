@@ -56,7 +56,7 @@ def main():
     sys.stderr.write('\n')
     if args.get_instant_demand:
         ts, demand = (gw.get_instantaneous_demand())
-        print(str(ts), str(demand) + 'kW')
+        print("{0!s}, {1!s}kW".format(ts, demand))
         sys.exit(0)
     if args.raw:
         print(gw.run_command_raw(**vars(args)))
