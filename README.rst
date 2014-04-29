@@ -114,4 +114,4 @@ Including meter_reader in an application
     print(response['NetworkInfo'])
 
     timestamp, demand = gw.get_instantaneous_demand()
-    print('Demand {0} at {1}'.format(demand, timestamp))
+    print('Demand {0!s} at {1!s}'.format(demand, timestamp))
