@@ -77,7 +77,7 @@ class Gateway(object):
         try:
             response = self.run_command_raw(**kwargs)
         except socket.error as e:
-            raise GatewayError(self.address, kwargs['Name'],
+            raise GatewayError(self.address, kwargs.get('Name', ''),
                                e.strerror, e.errno)
         # responses come as multiple XML fragments. Enclose them in
         # <response> to ensure valid XML.
