@@ -100,7 +100,7 @@ Raw and unformatted data returned by the gatway, can be viewed by using the
 
     $ mr -r -c GET_DEVICE_DATA < ip address >
 
-Including meter_reader in an application
+Including Meter Reader in an application
 -------------------------------------------------------------------------------
 ::
 
