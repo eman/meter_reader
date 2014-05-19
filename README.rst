@@ -12,14 +12,17 @@ Rainforest™ Automation.
 
 Installation
 -------------------------------------------------------------------------------
-::
+
+.. code-block:: bash
 
     $ pip install meter-reader
 
 Usage
 -------------------------------------------------------------------------------
 Meter Reader is intended to be used as a library for other applications
-but it does contain a command line application called mr::
+but it does contain a command line application called mr.
+
+.. code-block:: bash
 
     $ mr < ip address >
 
@@ -96,13 +99,16 @@ response before displaying it.::
     2014-04-19 15:58:39+00:00, 0.292kW
 
 Raw and unformatted data returned by the gatway, can be viewed by using the
-'-r' option::
+'-r' option.
+
+.. code-block:: bash
 
     $ mr -r -c GET_DEVICE_DATA < ip address >
 
 Including Meter Reader in an application
 -------------------------------------------------------------------------------
-::
+
+.. code-block:: python
 
     from meter_reader import Gateway
 
