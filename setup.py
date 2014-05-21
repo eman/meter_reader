@@ -42,6 +42,6 @@ setup(name='meter-reader',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
       ],
-      keywords='energy electricity smart-meter',
+      keywords='energy electricity smartmeter HAN',
       packages=find_packages(),
       entry_points={'console_scripts': ['mr=meter_reader.client:main']},)
