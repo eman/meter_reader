@@ -1,6 +1,3 @@
-Meter Reader
-===============================================================================
-
 Meter Reader is a client library and command line client for retrieving
 nearly realtime energy usage data from a smart meter via the Eagle™ Home
 Energy Gateway. See
@@ -30,7 +27,9 @@ This will run the ``LIST_DEVICES`` devices command on the gateway and display
 a formatted response. Other commands, such as ``GET_DEVICE_DATA``, will first
 run the ``LIST_DEVICES`` command to determine the MAC address of the gateway.
 
-Commands can be specified with the '-c' option. For example::
+Commands can be specified with the `'-c'` option. For example
+
+.. code-block:: bash
 
     $ mr -c GET_DEVICE_DATA < ip address >
 
@@ -59,8 +58,6 @@ Commands can be specified with the '-c' option. For example::
     NetworkInfo
     ...
 
-::
-
     $ mr -c GET_SUMMATION_VALUES < ip address >
 
     2014-04-18 16:30:00+00:00, Summation, 0.350
@@ -76,7 +73,7 @@ There are two ways to retrieve instantaneous demand:
 1. Send the ``GET_INSTANTANEOUS_DEMAND`` command directly to the gateway. This
    will return a nearly raw response from the gateway (formatting is applied).
 
-::
+.. code-block:: bash
 
     $ mr -c GET_INSTANTANEOUS_DEMAND < ip address >
 
@@ -92,14 +89,16 @@ There are two ways to retrieve instantaneous demand:
         SuppressLeadingZero Y
 
 2. Supply the ``--get-instant-demand`` argument. This will post-process the
-response before displaying it.::
+response before displaying it.
+
+.. code-block:: bash
 
     $ mr --get-instant-demand < ip address >
 
     2014-04-19 15:58:39+00:00, 0.292kW
 
 Raw and unformatted data returned by the gatway, can be viewed by using the
-'-r' option.
+`'-r'` option.
 
 .. code-block:: bash
 
