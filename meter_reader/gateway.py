@@ -81,7 +81,7 @@ class Gateway(object):
                                e.strerror, e.errno)
         # responses come as multiple XML fragments. Enclose them in
         # <response> to ensure valid XML.
-        if 'Interval data start' in response:
+        if 'Interval data start' in response or 'HistoryData' in response:
             return self.xml2list('<response>{0}</response>'.format(response),
                                  convert)
         else:
