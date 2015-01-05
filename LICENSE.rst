@@ -1,6 +1,6 @@
 License
 ===============================================================================
-Copyright © 2014, Emmanuel Levijarvi
+Copyright © 2015, Emmanuel Levijarvi
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
