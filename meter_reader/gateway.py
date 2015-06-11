@@ -139,7 +139,7 @@ class Gateway(object):
 
 def convert_data(key, value):
     if value is None:
-        return None
+        return
     if 'MacId' in key or 'Code' in key or 'Key' in key:
         len_ = 15
         if key == 'MeterMacId' or key == 'CoordMacId':
