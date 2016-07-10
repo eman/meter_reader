@@ -1,8 +1,8 @@
 """
 Meter Reader
 
-Copyright (c) 2015, Emmanuel Levijarvi
-License: BSD
+Copyright (c) 2016, Emmanuel Levijarvi
+License: BSD 2-Clause
 """
 
 import socket
