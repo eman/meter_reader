@@ -23,11 +23,11 @@ utctz = utc.UTC()
 BEGINNING_OF_TIME = datetime(2000, 1, 1, tzinfo=utctz)
 
 DEFAULT_PORT = 5002
-COMMANDS = ('LIST_DEVICES', 'GET_DEVICE_DATA', 'GET_INSTANTANEOUS_DEMAND',
-            'GET_DEMAND_VALUES', 'GET_SUMMATION_VALUES',
-            'GET_FAST_POLL_STATUS')
-SUPPORTED_ARGS = ('INTERVAL', 'FREQUENCY', 'STARTTIME', 'ENDTIME', 'DURATION',
-                  'NAME')
+COMMANDS = ('list_devices', 'get_device_data', 'get_instantaneous_demand',
+            'get_demand_values', 'get_summation_values',
+            'get_fast_poll_status')
+SUPPORTED_ARGS = ('interval', 'frequency', 'starttime', 'endtime', 'duration',
+                  'name')
 
 
 class GatewayError(Exception):
@@ -48,17 +48,17 @@ class Gateway(object):
         self.address = (address, port)
         self.timeout = socket.getdefaulttimeout()
         self.mac_id = None
-        devices = self.run_command(Name='LIST_DEVICES', convert=False)
+        devices = self.run_command(Name='list_devices', convert=False)
         self.mac_id = devices['DeviceInfo']['DeviceMacId']
 
     def generate_command_xml(self, **kwargs):
         c = ET.Element('LocalCommand')
         for tag, value in kwargs.items():
-            if tag.upper() not in SUPPORTED_ARGS or value is None:
+            if tag.lower() not in SUPPORTED_ARGS or value is None:
                 continue
-            if tag.upper() in ('STARTTIME', 'ENDTIME'):
+            if tag.lower() in ('starttime', 'endtime'):
                 value = hex((value - BEGINNING_OF_TIME).seconds)
-            elif tag.upper() in ('FREQUENCY', 'DURATION'):
+            elif tag.lower() in ('frequency', 'duration'):
                 value = hex(value)
             ET.SubElement(c, tag).text = value
         if self.mac_id is not None:
@@ -132,7 +132,7 @@ class Gateway(object):
         return response
 
     def get_instantaneous_demand(self):
-        resp = self.run_command(name='GET_DEVICE_DATA')['InstantaneousDemand']
+        resp = self.run_command(name='get_device_data')['InstantaneousDemand']
         demand = float(resp['Demand']) * resp['Multiplier'] / resp['Divisor']
         return (resp['TimeStamp'], demand)
 
@@ -145,7 +145,7 @@ def convert_data(key, value):
         if key == 'MeterMacId' or key == 'CoordMacId':
             len_ = 13
         return ':'.join(value.lstrip('0x')[i:i+2] for i in range(0, len_, 2))
-    if key.upper() in ('TIMESTAMP', 'ENDTIME') and int(value, 0):
+    if key.lower() in ('timestamp', 'endtime') and int(value, 0):
         return BEGINNING_OF_TIME + timedelta(0, int(value, 0))
     if isinstance(value, str) and value.startswith('0x'):
         return int(value, 0)
