@@ -25,7 +25,7 @@ for rst in ('README.rst', 'LICENSE.rst'):
 
 
 setup(name='meter-reader',
-      version='1.0.2',
+      version='1.1.0',
       description=description,
       long_description='\n\n'.join(long_descriptions),
       author='Emmanuel Levijarvi',
