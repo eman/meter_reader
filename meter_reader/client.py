@@ -1,8 +1,8 @@
 """
 Meter Reader
 
-:copyright: (c) 2014 by Emmanuel Levijarvi
-:license: BSD
+:copyright: (c) 2016 by Emmanuel Levijarvi
+:license: BSD 2-Clause
 """
 
 from __future__ import print_function
