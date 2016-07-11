@@ -23,15 +23,15 @@ but it does contain a command line application called mr.
 
     $ mr < ip address >
 
-This will run the ``LIST_DEVICES`` devices command on the gateway and display
-a formatted response. Other commands, such as ``GET_DEVICE_DATA``, will first
-run the ``LIST_DEVICES`` command to determine the MAC address of the gateway.
+This will run the ``list_devices`` devices command on the gateway and display
+a formatted response. Other commands, such as ``get_device_data``, will first
+run the ``list_devices`` command to determine the MAC address of the gateway.
 
 Commands can be specified with the `'-c'` option. For example
 
 .. code-block:: bash
 
-    $ mr -c GET_DEVICE_DATA < ip address >
+    $ mr -c get_device_data < ip address >
 
     MessageCluster
         DeviceMacId          xx:xx:xx:xx:xx:xx:xx:xx
@@ -58,7 +58,7 @@ Commands can be specified with the `'-c'` option. For example
     NetworkInfo
     ...
 
-    $ mr -c GET_SUMMATION_VALUES < ip address >
+    $ mr -c get_summation_values < ip address >
 
     2014-04-18 16:30:00+00:00, Summation, 0.350
     2014-04-18 17:30:00+00:00, Summation, 0.322
@@ -70,12 +70,12 @@ Commands can be specified with the `'-c'` option. For example
 
 There are two ways to retrieve instantaneous demand:
 
-1. Send the ``GET_INSTANTANEOUS_DEMAND`` command directly to the gateway. This
+1. Send the ``get_instantaneous_demand`` command directly to the gateway. This
    will return a nearly raw response from the gateway (formatting is applied).
 
 .. code-block:: bash
 
-    $ mr -c GET_INSTANTANEOUS_DEMAND < ip address >
+    $ mr -c get_instantaneous_demand < ip address >
 
         InstantaneousDemand
         DeviceMacId         xx:xx:xx:xx:xx:xx:xx:xx
@@ -102,7 +102,7 @@ Raw and unformatted data returned by the gatway, can be viewed by using the
 
 .. code-block:: bash
 
-    $ mr -r -c GET_DEVICE_DATA < ip address >
+    $ mr -r -c get_device_data < ip address >
 
 Including Meter Reader in an application
 -------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ Including Meter Reader in an application
     GATEWAY_ADDRESS = '192.168.1.10'
 
     gw = Gateway(GATEWAY_ADDRESS)
-    response = gw.run_command('GET_DEVICE_DATA')
+    response = gw.run_command('get_device_data')
     print('Network Info')
     print(response['NetworkInfo'])
 
