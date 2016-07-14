@@ -13,9 +13,9 @@ from contextlib import closing
 import collections
 # python 2/3 compatibilty fix-up
 try:
-    import StringIO
+    import io
 except ImportError:
-    import io as StringIO
+    import StringIO as io
 
 from meter_reader import utc
 
@@ -90,7 +90,7 @@ class Gateway(object):
 
     @staticmethod
     def xml2dict(xml, convert=True):
-        with closing(StringIO.StringIO(xml)) as f:
+        with closing(io.StringIO(xml)) as f:
             path = [{}]
             for event, element in ET.iterparse(f, events=('start', 'end')):
                 if element.tag == 'response':
@@ -114,7 +114,7 @@ class Gateway(object):
 
     @staticmethod
     def xml2list(xml, convert=True):
-        with closing(StringIO.StringIO(xml)) as f:
+        with closing(io.StringIO(xml)) as f:
             response = []
             for event, element in ET.iterparse(f, events=('start', 'end')):
                 if element.tag in ('Info', 'Text', 'response'):
