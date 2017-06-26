@@ -1,7 +1,7 @@
 """
 Meter Reader
 
-Copyright (c) 2016, Emmanuel Levijarvi
+Copyright (c) 2017, Emmanuel Levijarvi
 License: BSD 2-Clause
 """
 
@@ -137,6 +137,12 @@ class Gateway(object):
         return (resp['TimeStamp'], demand)
 
 
+def twos_complement(value, width=32):
+    if value & (1 << (width - 1)):
+        value = value - (1 << width)
+    return value
+
+
 def convert_data(key, value):
     if value is None:
         return
@@ -146,7 +152,7 @@ def convert_data(key, value):
             len_ = 13
         return ':'.join(value.lstrip('0x')[i:i+2] for i in range(0, len_, 2))
     if key.lower() in ('timestamp', 'endtime') and int(value, 0):
-        return BEGINNING_OF_TIME + timedelta(0, int(value, 0))
+        return BEGINNING_OF_TIME + timedelta(0, int(value, 16))
     if isinstance(value, str) and value.startswith('0x'):
-        return int(value, 0)
+        return twos_complement(int(value, 16))
     return value
