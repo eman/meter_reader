@@ -4,7 +4,7 @@ Meter Reader
 .. image:: https://api.codacy.com/project/badge/Grade/06a4909b69f947c4a70b9938ff0fc942
    :alt: Codacy Badge
    :target: https://www.codacy.com/app/emansl/meter_reader?utm_source=github.com&utm_medium=referral&utm_content=eman/meter_reader&utm_campaign=badger
-Release 1.1.0
+Release 1.1.1
 
 Meter Reader is a client library and command line client for retrieving
 nearly realtime energy usage data from a smart meter via the Eagle™ Home
