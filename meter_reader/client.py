@@ -1,7 +1,7 @@
 """
 Meter Reader
 
-:copyright: (c) 2016 by Emmanuel Levijarvi
+:copyright: (c) 2017 by Emmanuel Levijarvi
 :license: BSD 2-Clause
 """
 
