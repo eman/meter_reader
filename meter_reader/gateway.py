@@ -82,10 +82,10 @@ class Gateway(object):
         # responses come as multiple XML fragments. Enclose them in
         # <response> to ensure valid XML.
         if 'Interval data start' in response or 'HistoryData' in response:
-            return self.xml2list('<response>{0}</response>'.format(response),
+            return self.xml2list(u'<response>{0}</response>'.format(response),
                                  convert)
         else:
-            return self.xml2dict('<response>{0}</response>'.format(response),
+            return self.xml2dict(u'<response>{0}</response>'.format(response),
                                  convert)
 
     @staticmethod
