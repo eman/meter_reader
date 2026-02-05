@@ -26,16 +26,16 @@ jobs:
       run: uv sync --all-extras
 
     - name: Lint with ruff
-      run: ruff check src/ tests/
+      run: uv run ruff check src/ tests/
 
     - name: Type check with mypy
-      run: mypy src/
+      run: uv run mypy src/
 
     - name: Security check with bandit
-      run: bandit -r src/ -ll
+      run: uv run bandit -r src/ -ll
 
     - name: Run tests with pytest
-      run: pytest tests/ -v --cov=src/meter_reader --cov-report=xml --cov-report=term-missing
+      run: uv run pytest tests/ -v --cov=src/meter_reader --cov-report=xml --cov-report=term-missing
 
     - name: Upload coverage reports
       uses: codecov/codecov-action@v4
