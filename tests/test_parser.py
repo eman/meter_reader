@@ -1,5 +1,4 @@
 import unittest
-from datetime import datetime
 from meter_reader.clients.socket import EagleSocketClient
 
 class TestXMLParser(unittest.TestCase):

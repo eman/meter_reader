@@ -1,7 +1,6 @@
 import requests
 import logging
-from typing import Any, Dict, Optional, Tuple, Union
-from datetime import datetime, timezone
+from typing import Any, Dict
 
 from .base import EagleClient
 from ..models import (
@@ -22,10 +21,10 @@ class EagleHttpClient(EagleClient):
         self.mac_id: str | None = None
         
         try:
-             # Auto-detect MacID using get_device_list
-             self.list_devices()
-        except:
-             pass
+            # Auto-detect MacID using get_device_list
+            self.list_devices()
+        except Exception:  # noqa: BLE001
+            pass
 
     def _post_xml(self, name: str, **kwargs: Any) -> Dict[str, Any]:
         xml_payload = generate_command_xml(self.mac_id, Name=name, **kwargs)
@@ -38,7 +37,7 @@ class EagleHttpClient(EagleClient):
             )
             resp.raise_for_status()
             # The API returns JSON even though request is XML
-            return resp.json()
+            return resp.json()  # type: ignore[no-any-return]
         except requests.RequestException as e:
             logger.error(f"HTTP Request failed: {e}")
             raise

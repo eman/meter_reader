@@ -1,5 +1,4 @@
 """Tests for meter_reader models module."""
-import pytest
 from datetime import datetime, timezone
 from meter_reader.models import (
     InstantaneousDemand,

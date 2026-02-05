@@ -1,13 +1,11 @@
-import typer
-import json
+import typer  # type: ignore[import-not-found]
 import logging
 from rich.console import Console
 from rich.table import Table
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Optional, Any
 
 from .clients import SocketClient, HttpClient
-from .models import DeviceList, InstantaneousDemand, UsageData
 
 app = typer.Typer(no_args_is_help=True)
 console = Console()
@@ -27,14 +25,14 @@ def get_client(address: str, protocol: str, username: Optional[str] = None, pass
         console.print(f"[red]Invalid protocol: {protocol}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()
-def list(
-    address: str, 
+@app.command()  # type: ignore[untyped-decorator]
+def list(  # noqa: A001
+    address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
-    username: str = typer.Option(None, help="Username for HTTP"),
-    password: str = typer.Option(None, help="Password for HTTP"),
-    raw: bool = typer.Option(False, help="Show raw output")
-):
+    username: Optional[str] = typer.Option(None, help="Username for HTTP"),
+    password: Optional[str] = typer.Option(None, help="Password for HTTP"),
+    raw: bool = typer.Option(False, help="Show raw output"),
+) -> None:
     """List devices on gateway."""
     client = get_client(address, protocol, username, password)
     try:
@@ -62,14 +60,14 @@ def list(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()
+@app.command()  # type: ignore[untyped-decorator]
 def demand(
     address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
-    username: str = typer.Option(None, help="Username for HTTP"),
-    password: str = typer.Option(None, help="Password for HTTP"),
-    raw: bool = typer.Option(False, help="Show raw JSON")
-):
+    username: Optional[str] = typer.Option(None, help="Username for HTTP"),
+    password: Optional[str] = typer.Option(None, help="Password for HTTP"),
+    raw: bool = typer.Option(False, help="Show raw JSON"),
+) -> None:
     """Get instantaneous demand."""
     client = get_client(address, protocol, username, password)
     try:
@@ -83,14 +81,14 @@ def demand(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()
+@app.command()  # type: ignore[untyped-decorator]
 def summation(
     address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
-    username: str = typer.Option(None, help="Username for HTTP"),
-    password: str = typer.Option(None, help="Password for HTTP"),
-    raw: bool = typer.Option(False, help="Show raw JSON")
-):
+    username: Optional[str] = typer.Option(None, help="Username for HTTP"),
+    password: Optional[str] = typer.Option(None, help="Password for HTTP"),
+    raw: bool = typer.Option(False, help="Show raw JSON"),
+) -> None:
     """Get summation values."""
     client = get_client(address, protocol, username, password)
     try:
@@ -105,14 +103,14 @@ def summation(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()
+@app.command()  # type: ignore[untyped-decorator]
 def usage(
     address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
-    username: str = typer.Option(None, help="Username for HTTP"),
-    password: str = typer.Option(None, help="Password for HTTP"),
-    raw: bool = typer.Option(False, help="Show raw JSON")
-):
+    username: Optional[str] = typer.Option(None, help="Username for HTTP"),
+    password: Optional[str] = typer.Option(None, help="Password for HTTP"),
+    raw: bool = typer.Option(False, help="Show raw JSON"),
+) -> None:
     """Get usage summary (Demand + Summation)."""
     client = get_client(address, protocol, username, password)
     try:
@@ -134,17 +132,17 @@ def usage(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()
+@app.command()  # type: ignore[untyped-decorator]
 def history(
     address: str,
     hours: int = typer.Option(1, help="Number of hours to look back"),
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
-    username: str = typer.Option(None, help="Username for HTTP"),
-    password: str = typer.Option(None, help="Password for HTTP"),
+    username: Optional[str] = typer.Option(None, help="Username for HTTP"),
+    password: Optional[str] = typer.Option(None, help="Password for HTTP"),
     raw: bool = typer.Option(False, help="Show raw JSON"),
-):
+) -> None:
     """Get historical summation data over time."""
-    from datetime import datetime, timedelta, timezone
+    from datetime import timedelta, timezone
     
     if protocol != "socket":
         console.print("[red]History command only supports socket protocol[/red]")
@@ -181,15 +179,15 @@ def history(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()
+@app.command()  # type: ignore[untyped-decorator]
 def watch(
     address: str,
     interval: int = typer.Option(5, help="Update interval in seconds"),
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
-    username: str = typer.Option(None, help="Username for HTTP"),
-    password: str = typer.Option(None, help="Password for HTTP"),
+    username: Optional[str] = typer.Option(None, help="Username for HTTP"),
+    password: Optional[str] = typer.Option(None, help="Password for HTTP"),
     mode: str = typer.Option("usage", help="What to watch: demand, summation, or usage"),
-):
+) -> None:
     """Continuously monitor demand/summation values (Ctrl+C to stop)."""
     import time
     from rich.live import Live
@@ -197,7 +195,7 @@ def watch(
     
     client = get_client(address, protocol, username, password)
     
-    def generate_display():
+    def generate_display() -> str | Table:
         """Generate the display content based on mode."""
         try:
             if mode == "demand":

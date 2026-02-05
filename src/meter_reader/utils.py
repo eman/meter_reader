@@ -3,7 +3,6 @@ from xml.dom import minidom
 from datetime import datetime
 from typing import Any
 
-from .clients.base import EagleClient # Circular import risk? No, utils is imported by clients.
 # Wait, avoiding circular dependency. 
 # Constants
 BEGINNING_OF_TIME = datetime(2000, 1, 1)

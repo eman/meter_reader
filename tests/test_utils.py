@@ -1,6 +1,4 @@
 """Tests for meter_reader utils module."""
-import pytest
-from datetime import datetime, timezone
 from meter_reader.utils import generate_command_xml, BEGINNING_OF_TIME
 
 

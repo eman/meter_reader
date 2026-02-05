@@ -2,7 +2,7 @@ import socket
 import logging
 from contextlib import closing
 from datetime import datetime, timezone, timedelta
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
@@ -12,7 +12,6 @@ from ..models import (
     DeviceList,
     NetworkInfo,
     CurrentSummation,
-    DeviceInfo,
 )
 from .base import EagleClient
 

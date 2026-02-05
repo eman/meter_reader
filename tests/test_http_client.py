@@ -1,17 +1,14 @@
 """Tests for meter_reader HTTP client module."""
 import pytest
-from datetime import datetime
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch, MagicMock
 import requests
 
 from meter_reader.clients.http import EagleHttpClient
 from meter_reader.models import (
     DeviceList,
-    DeviceInfo,
     UsageData,
     InstantaneousDemand,
     CurrentSummation,
-    NetworkInfo,
 )
 
 
