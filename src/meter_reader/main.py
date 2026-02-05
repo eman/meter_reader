@@ -1,4 +1,4 @@
-import typer  # type: ignore[import-not-found]
+import typer
 import logging
 from rich.console import Console
 from rich.table import Table
@@ -25,7 +25,7 @@ def get_client(address: str, protocol: str, username: Optional[str] = None, pass
         console.print(f"[red]Invalid protocol: {protocol}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()  # type: ignore[untyped-decorator]
+@app.command()
 def list(  # noqa: A001
     address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
@@ -60,7 +60,7 @@ def list(  # noqa: A001
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()  # type: ignore[untyped-decorator]
+@app.command()
 def demand(
     address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
@@ -81,7 +81,7 @@ def demand(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()  # type: ignore[untyped-decorator]
+@app.command()
 def summation(
     address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
@@ -103,7 +103,7 @@ def summation(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()  # type: ignore[untyped-decorator]
+@app.command()
 def usage(
     address: str,
     protocol: str = typer.Option("socket", help="Protocol: socket or http"),
@@ -132,7 +132,7 @@ def usage(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()  # type: ignore[untyped-decorator]
+@app.command()
 def history(
     address: str,
     hours: int = typer.Option(1, help="Number of hours to look back"),
@@ -179,7 +179,7 @@ def history(
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(code=1)
 
-@app.command()  # type: ignore[untyped-decorator]
+@app.command()
 def watch(
     address: str,
     interval: int = typer.Option(5, help="Update interval in seconds"),
