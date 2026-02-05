@@ -38,6 +38,11 @@ Repository = "https://github.com/eman/meter_reader.git"
 Issues = "https://github.com/eman/meter_reader/issues"
 
 [project.optional-dependencies]
+dev = [
+    "pytest>=9.0",
+    "pytest-cov>=7.0",
+    "defusedxml>=0.0.1",
+]
 docs = [
     "mkdocs-material>=9.0",
     "mkdocs-render-swagger-plugin",
