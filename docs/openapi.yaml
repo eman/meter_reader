@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: EAGLE Gateway Local HTTP API
+  description: |
+    Documentation for the local HTTP interface of the Rainforest EAGLE gateway.
+    While the official API uses a socket connection on port 5002, this interface allows for similar functionality over HTTP POST requests using XML payloads and JSON responses.
+  version: 1.0.0
+servers:
+  - url: http://{host}
+    description: Local EAGLE Gateway
+    variables:
+      host:
+        default: eagle-000000.local
+        description: Hostname or IP address of the gateway
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+security:
+  - basicAuth: []
+
+paths:
+  /cgi-bin/cgi_manager:
+    post:
+      summary: Execute Local Commands
+      description: |
+        Primary endpoint for retrieving meter data and device information. 
+        Requests are sent as XML wrapped in `<LocalCommand>...</LocalCommand>`.
+        Responses are typically JSON.
+      requestBody:
+        required: true
+        content:
+          text/xml:
+            schema:
+              type: string
+              example: |
+                <LocalCommand>
+                  <Name>get_usage_data</Name>
+                  <MacId>0xd8d5b90000000cee</MacId>
+                </LocalCommand>
+      responses:
+        '200':
+          description: Successful response
+          content:
+            text/html: # The content-type might be text/html but body is JSON
+              schema:
+                type: object # It returns a JSON object
+                example:
+                  demand: "1.234"
+                  demand_units: "kW"
+                  summation_delivered: "12345.678"
+                  meter_status: "Connected"
+  
+  /cgi-bin/post_manager:
+    post:
+      summary: Execute System Configuration Commands
+      description: |
+        Endpoint for system-level configuration such as mDNS, Remote Management, and Cloud settings.
+        Requests are sent as XML wrapped in `<Command>...</Command>` (often with `<Format>JSON</Format>`).
+      requestBody:
+        required: true
+        content:
+          text/xml:
+            schema:
+              type: string
+              example: |
+                <Command>
+                  <Name>get_mdns_status</Name>
+                  <Format>JSON</Format>
+                </Command>
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  mDnsStatus:
+                    Enabled: "Y"
