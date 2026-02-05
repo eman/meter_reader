@@ -9,13 +9,13 @@ Meter Reader is a client library and command-line tool for retrieving near-realt
 
 ## Features
 
-- 📊 **Library API** - Use as a Python library in your own applications
-- 🖥️ **CLI Tool** - Command-line interface for querying gateway data
-- 📡 **Multiple Commands** - Support for device data, instantaneous demand, and historical values
-- 📋 **Multiple Formats** - Output in table, JSON, or CSV format
-- 🔐 **Type-Safe** - Full type hints for better IDE support and type checking
-- 🚀 **Modern Packaging** - Built with pyproject.toml and PEP 517 compliance
-- 🏠 **No Dependencies** - Pure Python standard library, no external dependencies
+- **Library API** - Use as a Python library in your own applications
+- **CLI Tool** - Command-line interface for querying gateway data
+- **Multiple Commands** - Support for device data, instantaneous demand, and historical values
+- **Multiple Formats** - Output in table, JSON, or CSV format
+- **Type-Safe** - Full type hints for better IDE support and type checking
+- **Modern Packaging** - Built with pyproject.toml and PEP 517 compliance
+- **No Dependencies** - Pure Python standard library, no external dependencies
 
 ## Installation
 
