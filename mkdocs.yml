@@ -1,7 +1,7 @@
 site_name: EAGLE Meter Reader
 site_description: Python library and documentation for the Rainforest EAGLE 200 Gateway.
 site_author: Emmanuel
-repo_url: https://github.com/your-repo/meter_reader  # Update with actual repo
+repo_url: https://github.com/eman/meter_reader
 repo_name: meter_reader
 
 theme:
