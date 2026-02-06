@@ -1,13 +1,16 @@
 # Clients API
 
-The `meter_reader` library provides two client implementations for the EAGLE Gateway, each suited to different deployment scenarios and authentication requirements.
+The `meter_reader` library provides three client implementations for the EAGLE Gateway, each suited to different use cases:
 
 ## Overview
 
-Both clients inherit from the abstract `EagleClient` base class, which defines the common interface for interacting with the gateway. Choose based on your gateway's network configuration and authentication setup:
+* **Socket API Client**: Fast, low-overhead XML-based communication for meter data (Port 5002)
+* **HTTP API Client**: Standard HTTP with JSON responses for meter data (Port 80)
+* **Configuration Client**: System configuration and gateway administration (Port 80, `/cgi-bin/post_manager`)
 
-* **Socket API**: Fast, low-overhead XML-based communication (Port 5002)
-* **HTTP API**: Standard HTTP with JSON responses and authentication support (Port 80)
+Choose based on your use case:
+- **Meter data** (demand, summation, history): Use Socket or HTTP client
+- **Gateway configuration** (mDNS, remote management, cloud status): Use Configuration client
 
 ## Base Client Interface
 

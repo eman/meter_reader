@@ -8,13 +8,13 @@ an Eagle Energy Gateway.
 :license: BSD 2-Clause
 """
 
-from .clients import SocketClient as EagleSocketClient, HttpClient as EagleHttpClient
+from .clients import SocketClient as EagleSocketClient, HttpClient as EagleHttpClient, ConfigClient as EagleConfigClient
 from .models import InstantaneousDemand, UsageData, CurrentSummation, NetworkInfo, DeviceList
 
 __version__ = "2.0.0"
 __author__ = "Emmanuel Levijarvi"
 __all__ = [
-    'EagleSocketClient', 'EagleHttpClient', 
+    'EagleSocketClient', 'EagleHttpClient', 'EagleConfigClient',
     'InstantaneousDemand', 'UsageData', 
     'CurrentSummation', 'NetworkInfo', 'DeviceList'
 ]

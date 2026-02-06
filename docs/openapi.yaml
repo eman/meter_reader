@@ -59,7 +59,14 @@ paths:
       summary: Execute System Configuration Commands
       description: |
         Endpoint for system-level configuration such as mDNS, Remote Management, and Cloud settings.
-        Requests are sent as XML wrapped in `<Command>...</Command>` (often with `<Format>JSON</Format>`).
+        Requests are sent as XML wrapped in `<Command>...</Command>` with `<Format>JSON</Format>` for JSON responses.
+        
+        This endpoint provides access to:
+        - mDNS (Multicast DNS) configuration for local network discovery
+        - Remote management and cloud service integration
+        - Gateway device configuration and firmware information
+        - Network settings and time synchronization
+        - SSH access control (if available)
       requestBody:
         required: true
         content:
@@ -81,3 +88,84 @@ paths:
                 example:
                   mDnsStatus:
                     Enabled: "Y"
+                    Hostname: "eagle-000cee"
+
+  /cgi-bin/post_manager-get-device-config:
+    post:
+      summary: Get Device Configuration
+      description: Get gateway device configuration including firmware, hardware, and cloud status.
+      requestBody:
+        required: true
+        content:
+          text/xml:
+            schema:
+              type: string
+              example: |
+                <Command>
+                  <Name>get_device_config</Name>
+                  <Format>JSON</Format>
+                </Command>
+      responses:
+        '200':
+          description: Device configuration response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  FirmwareVersion: "1.4.48"
+                  HardwareVersion: "2.0"
+                  MacAddress: "00:11:22:33:44:55:66"
+
+  /cgi-bin/post_manager-get-cloud-status:
+    post:
+      summary: Get Cloud Service Status
+      description: Get cloud service connectivity and configuration status.
+      requestBody:
+        required: true
+        content:
+          text/xml:
+            schema:
+              type: string
+              example: |
+                <Command>
+                  <Name>get_cloud_status</Name>
+                  <Format>JSON</Format>
+                </Command>
+      responses:
+        '200':
+          description: Cloud status response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  CloudStatus:
+                    Connected: "Y"
+                    Provider: "Rainforest"
+
+  /cgi-bin/post_manager-get-remote-management:
+    post:
+      summary: Get Remote Management Status
+      description: Get Rainforest Remote Management service status and settings.
+      requestBody:
+        required: true
+        content:
+          text/xml:
+            schema:
+              type: string
+              example: |
+                <Command>
+                  <Name>get_remote_management_status</Name>
+                  <Format>JSON</Format>
+                </Command>
+      responses:
+        '200':
+          description: Remote management status response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  RemoteEnabled: "Y"
+                  RemoteStatus: "Connected"
