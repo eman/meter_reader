@@ -2,64 +2,258 @@
 
 ## Overview
 
-The primary method for communicating with the Rainforest EAGLE gateway is via a TCP socket on port **5002**. This interface allows you to send XML commands and receive XML responses in a persistent session.
+The Socket API is the primary method for communicating with the Rainforest EAGLE gateway. It provides a TCP socket interface on port **5002** that accepts XML commands and returns XML responses. This interface is ideal for real-time data queries and is supported by the `EagleSocketClient` in this library.
 
 ## Connection Details
 
 * **Port**: 5002
 * **Protocol**: TCP
-* **Authentication**: Basic Auth (HTTP-style headers required initially or possibly implied by credentials in command - verify with `gateway.py` implementation, actually `gateway.py` sends `set_auth` or uses local credentials if enabled? No, wait. The script sends XML directly. The `gateway.py` implementation just opens a socket and sends data. But wait, `EAGLE_REST_API` mentions Basic Auth for HTTP, but for Socket? Let's check `gateway.py` again. `_create_socket` just connects. The commands include `<User>` and `<Password>` within the XML payload if required by device settings, but typically the local API is open or uses `set_auth`.)
-  * *Correction*: The `gateway.py` implementation sends user/pass in the XML body for some commands, or relies on the session state.
+* **Authentication**: The gateway's local socket API typically operates without authentication (default), though some configurations may require credentials embedded in the XML command payload.
 
 ## Command Structure
 
-Commands are sent as XML fragments. The root element is typically `<LocalCommand>`.
+Commands are sent as XML fragments with the root element `<LocalCommand>`.
 
-### Request Example
+### Generic Request Format
 
 ```xml
 <LocalCommand>
-    <Name>get_usage_data</Name>
-    <MacId>0xd8d5b90000000cee</MacId>
+  <Name>command_name</Name>
+  <MacId>0xd8d5b90000000cee</MacId>
+  <!-- Optional parameters -->
+  <StartTime>0x6F123456</StartTime>
+  <EndTime>0x6F123789</EndTime>
+  <Frequency>0x384</Frequency>
 </LocalCommand>
 ```
 
-### Response Example
+**Common Fields:**
+- `Name`: Command name (required)
+- `MacId` / `DeviceMacId`: Device MAC address (optional; auto-discovered if omitted)
+- `StartTime`, `EndTime`: Time range for historical queries (Unix time in hex)
+- `Frequency`: Sample interval in seconds (hex) for historical data
+
+### Generic Response Format
+
+All responses are returned as XML without a wrapping root element:
 
 ```xml
-<usage_data>
-    <demand>1.234</demand>
-    <demand_units>kW</demand_units>
-    <summation_delivered>12345.678</summation_delivered>
-    <meter_status>Connected</meter_status>
-</usage_data>
+<InstantaneousDemand>
+  <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+  <MeterMacId>0x1122334455667788</MeterMacId>
+  <TimeStamp>0x6F123456</TimeStamp>
+  <Demand>2468</Demand>
+  <Multiplier>1</Multiplier>
+  <Divisor>1000</Divisor>
+  <DigitsRight>3</DigitsRight>
+  <DigitsLeft>5</DigitsLeft>
+  <SuppressLeadingZero>0</SuppressLeadingZero>
+</InstantaneousDemand>
 ```
 
 ## Supported Commands
 
-The following commands have been verified to work on the EAGLE 200 (Firmware 1.4.48):
+### list_devices
 
-* **`get_device_list`**
-  * Returns list of paired devices (meters).
-* **`get_device_data`** (mapped to `get_instantaneous_demand` in library)
-  * Returns real-time demand.
-* **`get_usage_data`**
-  * Returns current usage details.
-* **`get_network_info`**
-  * Returns ZigBee network status, channel, and link strength.
-* **`get_history_data`**
-  * Returns historical data (summation, demand) for specified time periods.
-  * *Note*: Response can be large and nested.
+Lists all devices (smart meters) paired with the gateway.
+
+**Request:**
+```xml
+<LocalCommand>
+  <Name>list_devices</Name>
+</LocalCommand>
+```
+
+**Response:**
+```xml
+<DeviceList>
+  <DeviceInfo>
+    <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+    <InstallCode>0x1234567890ABCDEF</InstallCode>
+    <LinkKey>0x0011223344556677</LinkKey>
+    <FWVersion>1.4.48</FWVersion>
+    <HWVersion>2.0</HWVersion>
+    <ImageType>0x05</ImageType>
+    <Manufacturer>Rainforest Automation</Manufacturer>
+    <ModelId>EAGLE-200</ModelId>
+    <DateCode>2023-01-15</DateCode>
+  </DeviceInfo>
+  <!-- Multiple DeviceInfo elements for multiple devices -->
+</DeviceList>
+```
+
+**Response Fields:**
+- `DeviceMacId`: Hardware MAC address (42-bit format)
+- `InstallCode`: Secure pairing code
+- `LinkKey`: ZigBee encryption key
+- `FWVersion`: Firmware version
+- `HWVersion`: Hardware version
+- `ImageType`: Image/model type code
+- `Manufacturer`: Device manufacturer
+- `ModelId`: Model identifier
+- `DateCode`: Manufacturing date
+
+### get_instantaneous_demand
+
+Returns real-time power demand measurement.
+
+**Request:**
+```xml
+<LocalCommand>
+  <Name>get_instantaneous_demand</Name>
+  <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+</LocalCommand>
+```
+
+**Response:**
+```xml
+<InstantaneousDemand>
+  <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+  <MeterMacId>0x1122334455667788</MeterMacId>
+  <TimeStamp>0x6F123456</TimeStamp>
+  <Demand>2468</Demand>
+  <Multiplier>1</Multiplier>
+  <Divisor>1000</Divisor>
+  <DigitsRight>3</DigitsRight>
+  <DigitsLeft>5</DigitsLeft>
+  <SuppressLeadingZero>0</SuppressLeadingZero>
+</InstantaneousDemand>
+```
+
+**Response Fields:**
+- `Demand`: Raw demand integer (scaled by Multiplier/Divisor)
+- `Multiplier` / `Divisor`: Scaling factors for unit conversion
+- `DigitsRight` / `DigitsLeft`: Decimal precision information
+- `TimeStamp`: Measurement time (seconds since 2000-01-01, hex)
+
+**Calculation:** `Actual Demand (kW) = (Demand × Multiplier) ÷ Divisor`
+
+### get_device_data
+
+Returns a comprehensive snapshot including demand, summation, and network information.
+
+**Request:**
+```xml
+<LocalCommand>
+  <Name>get_device_data</Name>
+  <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+</LocalCommand>
+```
+
+**Response:**
+```xml
+<DeviceData>
+  <InstantaneousDemand>
+    <!-- Same structure as get_instantaneous_demand -->
+  </InstantaneousDemand>
+  <CurrentSummation>
+    <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+    <MeterMacId>0x1122334455667788</MeterMacId>
+    <TimeStamp>0x6F123456</TimeStamp>
+    <SummationDelivered>12345678</SummationDelivered>
+    <SummationReceived>0</SummationReceived>
+    <Multiplier>1</Multiplier>
+    <Divisor>1000</Divisor>
+    <DigitsRight>3</DigitsRight>
+    <DigitsLeft>8</DigitsLeft>
+    <SuppressLeadingZero>0</SuppressLeadingZero>
+  </CurrentSummation>
+  <NetworkInfo>
+    <!-- See get_network_info -->
+  </NetworkInfo>
+</DeviceData>
+```
+
+### get_network_info
+
+Returns ZigBee network status and signal strength.
+
+**Request:**
+```xml
+<LocalCommand>
+  <Name>get_network_info</Name>
+  <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+</LocalCommand>
+```
+
+**Response:**
+```xml
+<NetworkInfo>
+  <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+  <CoordMacId>0x000d6f000a9069e7</CoordMacId>
+  <Status>Connected</Status>
+  <Description>Device is connected</Description>
+  <ExtPanId>0x000d6ffffeFEXXXX</ExtPanId>
+  <Channel>15</Channel>
+  <ShortAddr>0x1234</ShortAddr>
+  <LinkStrength>87</LinkStrength>
+</NetworkInfo>
+```
+
+**Response Fields:**
+- `Status`: Connection status (`"Connected"`, `"Joining"`, `"Unavailable"`)
+- `Channel`: ZigBee channel in use (11-26, typically 11-15)
+- `LinkStrength`: Signal strength percentage (0-100)
+- `ExtPanId`: Extended PAN ID for the ZigBee mesh
+
+### get_history_data
+
+Returns historical energy consumption data in time intervals.
+
+**Request:**
+```xml
+<LocalCommand>
+  <Name>get_history_data</Name>
+  <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+  <StartTime>0x6F123456</StartTime>
+  <EndTime>0x6F123789</EndTime>
+  <Frequency>0x384</Frequency>
+</LocalCommand>
+```
+
+**Parameters:**
+- `StartTime`: Query start time (seconds since 2000-01-01, hex format)
+- `EndTime`: Query end time (seconds since 2000-01-01, hex format)
+- `Frequency`: Sample interval in seconds (hex); common values:
+  - `0x384` = 900 seconds = 15 minutes
+  - `0x708` = 1800 seconds = 30 minutes
+  - `0xE10` = 3600 seconds = 1 hour
+
+**Response:**
+```xml
+<HistoryData>
+  <CurrentSummation>
+    <DeviceMacId>0xd8d5b90000000cee</DeviceMacId>
+    <MeterMacId>0x1122334455667788</MeterMacId>
+    <TimeStamp>0x6F123456</TimeStamp>
+    <SummationDelivered>12345600</SummationDelivered>
+    <SummationReceived>0</SummationReceived>
+    <Multiplier>1</Multiplier>
+    <Divisor>1000</Divisor>
+    <DigitsRight>3</DigitsRight>
+    <DigitsLeft>8</DigitsLeft>
+    <SuppressLeadingZero>0</SuppressLeadingZero>
+  </CurrentSummation>
+  <!-- Multiple CurrentSummation elements for each interval -->
+  <CurrentSummation>
+    <TimeStamp>0x6F123789</TimeStamp>
+    <SummationDelivered>12346000</SummationDelivered>
+    <!-- ... -->
+  </CurrentSummation>
+</HistoryData>
+```
+
+**Note:** This command can return large responses if querying long time periods. The response may be truncated by the gateway if the dataset exceeds internal buffer limits.
 
 ## Unsupported Commands
 
-The following commands are documented in `EAGLE_REST_API-1.0.pdf` but were **rejected** by the device during testing:
+The following commands are documented in official EAGLE documentation but are **rejected** by the device during testing:
 
-* `get_price`
-* `get_message`
-* `get_current_summation` (use `get_history_data`)
-* `set_price` (via socket - use HTTP for reliable setting)
+- `get_price`: Price information not exposed via socket API
+- `get_message`: Message queue not accessible via socket API
+- `get_current_summation`: Use `get_device_data` or `get_history_data` instead
+- `set_price`: Use HTTP API for configuration changes (if supported)
 
-## Libraries
+## Python Client Usage
 
-* **Python**: `meter_reader` (this library) provides a convenient wrapper around this socket API.
+The `EagleSocketClient` handles all XML generation and response parsing automatically. See the [Clients documentation](../api/clients.md#socket-client) for examples.
