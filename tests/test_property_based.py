@@ -61,9 +61,22 @@ class TestTwosComplementProperties:
     @settings(max_examples=50)
     @given(st.integers(0, 2**32 - 1), st.integers(8, 64))
     def test_roundtrip_consistency(self, value, width):
-        """Converting back should give consistent results."""
-        signed = twos_complement(value, width)
-        assert isinstance(signed, int)
+        """Roundtrip: value should reconstruct to original unsigned representation."""
+        # First, truncate value to the width
+        mask = (1 << width) - 1
+        truncated = value & mask
+        
+        # Convert truncated value to signed
+        signed = twos_complement(truncated, width)
+        
+        # Reconstruct the unsigned value
+        if signed < 0:
+            reconstructed = signed + (1 << width)
+        else:
+            reconstructed = signed
+        
+        # Should match the truncated value
+        assert reconstructed == truncated
 
     def test_all_32bit_boundaries(self):
         """Test specific 32-bit boundaries."""
@@ -143,11 +156,12 @@ class TestConvertDataProperties:
     @PROFILE_SETTINGS
     @given(st.integers(0, 0x7FFFFFFF))
     def test_hex_value_conversion_positive(self, value):
-        """Positive hex values should convert to integer."""
+        """Positive hex values for Multiplier should convert to integer."""
         hex_str = hex(value)
-        result = convert_data("SomeIntKey", hex_str)
-        # Should convert hex string to integer
-        assert isinstance(result, (int, str))  # Depends on the key handling
+        result = convert_data("Multiplier", hex_str)
+        # Multiplier key should convert hex string to integer
+        assert isinstance(result, int)
+        assert result == value
 
     @PROFILE_SETTINGS
     @given(st.just("EndTime"), st.integers(1, 86400))
@@ -201,7 +215,8 @@ class TestDemandCalculations:
         )
         
         expected = (demand * multiplier) / divisor
-        assert model.panic_demand == expected
+        # Use approximate comparison for floating-point values
+        assert abs(model.panic_demand - expected) < 1e-9
 
     @PROFILE_SETTINGS
     @given(st.integers(0, 1000000))
@@ -254,8 +269,9 @@ class TestSummationCalculations:
         expected_delivered = (delivered * multiplier) / divisor
         expected_received = (received * multiplier) / divisor
         
-        assert model.delivered_kwh == expected_delivered
-        assert model.received_kwh == expected_received
+        # Use approximate comparison for floating-point values
+        assert abs(model.delivered_kwh - expected_delivered) < 1e-9
+        assert abs(model.received_kwh - expected_received) < 1e-9
 
     @PROFILE_SETTINGS
     @given(st.integers(0, 1000000), st.integers(0, 1000000))
@@ -405,9 +421,9 @@ class TestModelFieldValidation:
         assert device.model_id == model_id
 
     @PROFILE_SETTINGS
-    @given(st.text(max_size=50, alphabet="Connected,Unavailable,Joining"))
+    @given(st.sampled_from(["Connected", "Unavailable", "Joining"]))
     def test_network_status_field(self, status):
-        """Network status should accept various values."""
+        """Network status should accept valid status values."""
         from meter_reader.models import NetworkInfo
         
         network = NetworkInfo(

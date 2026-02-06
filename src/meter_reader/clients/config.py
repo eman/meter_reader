@@ -1,6 +1,7 @@
 import requests
 import logging
 from typing import Any, Dict
+from xml.sax.saxutils import escape
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +42,19 @@ class EagleConfigClient:
         Raises:
             requests.RequestException: If the HTTP request fails
         """
-        # Build XML command
+        # Build XML command with proper escaping to prevent XML injection
         xml_parts = ['<Command>']
-        xml_parts.append(f'  <Name>{name}</Name>')
+        xml_parts.append(f'  <Name>{escape(name)}</Name>')
         xml_parts.append('  <Format>JSON</Format>')
         
         for key, value in kwargs.items():
             if value is not None:
-                xml_parts.append(f'  <{key}>{value}</{key}>')
+                # Validate tag names are alphanumeric (allowlist approach)
+                if not key.replace('_', '').isalnum():
+                    logger.warning(f"Skipping parameter with invalid tag name: {key}")
+                    continue
+                escaped_value = escape(str(value))
+                xml_parts.append(f'  <{key}>{escaped_value}</{key}>')
         
         xml_parts.append('</Command>')
         xml_payload = '\n'.join(xml_parts)
