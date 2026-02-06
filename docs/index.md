@@ -10,8 +10,9 @@ This library provides a Python interface to the **Rainforest EAGLE 200 Gateway**
 
 * **Real-time Data**: Fetch instantaneous demand and summation.
 * **Historical Data**: Retrieve past usage logs.
-* **Device Management**: Configure settings (price, cloud provider, etc.).
+* **Gateway Configuration**: Manage mDNS, remote management, cloud integration, and system settings.
 * **Two Interfaces**: Support for both the robust Socket API (legacy) and the modern HTTP API (JSON).
+* **System Administration**: Query device configuration, network settings, and cloud status.
 
 ## Installation
 

@@ -60,6 +60,7 @@ nav:
   - Home: index.md
   - Library API:
     - Clients: api/clients.md
+    - Configuration: api/config.md
     - Models: api/models.md
   - Device API:
     - Socket API (Port 5002): socket_api.md
