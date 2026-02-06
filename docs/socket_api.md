@@ -257,3 +257,104 @@ The following commands are documented in official EAGLE documentation but are **
 ## Python Client Usage
 
 The `EagleSocketClient` handles all XML generation and response parsing automatically. See the [Clients documentation](../api/clients.md#socket-client) for examples.
+
+## Real-Time Monitoring and Polling
+
+The primary approach for real-time monitoring is **polling-based** queries, where you initiate periodic requests to the gateway. The Socket API is designed to be efficient for this use case.
+
+### Polling Strategy
+
+**Optimal polling intervals depend on your use case:**
+
+- **Demand monitoring**: 10-30 seconds (balance between responsiveness and traffic)
+- **Energy summation**: 5-60 minutes (changes slowly, no need for frequent updates)
+- **Network status**: 30-300 seconds (diagnostic purposes)
+- **Historical data**: Query on-demand (no continuous polling needed)
+
+### Example: Real-Time Demand Monitor
+
+```python
+import time
+from meter_reader import EagleSocketClient
+
+client = EagleSocketClient("192.168.1.100")
+
+print("Starting real-time monitoring (Ctrl+C to stop)...")
+while True:
+    try:
+        demand = client.get_instantaneous_demand()
+        timestamp = demand.timestamp.strftime("%H:%M:%S")
+        print(f"[{timestamp}] {demand.panic_demand:.3f} kW")
+        time.sleep(10)  # Query every 10 seconds
+    except KeyboardInterrupt:
+        print("\nMonitoring stopped")
+        break
+    except Exception as e:
+        print(f"Error: {e}")
+        time.sleep(10)
+```
+
+### Example: Alert on High Demand
+
+```python
+import time
+from meter_reader import EagleSocketClient
+
+client = EagleSocketClient("192.168.1.100")
+THRESHOLD_KW = 5.0
+last_alert_time = 0
+ALERT_COOLDOWN = 300  # Don't send alerts more than once per 5 minutes
+
+while True:
+    try:
+        demand = client.get_instantaneous_demand()
+        current_time = time.time()
+        
+        if demand.panic_demand > THRESHOLD_KW:
+            if current_time - last_alert_time > ALERT_COOLDOWN:
+                print(f"ALERT: Demand {demand.panic_demand:.2f} kW exceeds threshold!")
+                # Send email, webhook, or notification here
+                last_alert_time = current_time
+        
+        time.sleep(10)
+    except Exception as e:
+        print(f"Error: {e}")
+        time.sleep(10)
+```
+
+### Performance Considerations
+
+**Socket connection efficiency:**
+
+- The Socket API is optimized for sequential queries on a single connection
+- Opening a new socket for each query adds 50-200ms latency
+- Reuse client instances: `client = EagleSocketClient(...)` once, then call methods repeatedly
+- The `EagleSocketClient` automatically manages socket lifecycle for you
+
+**Monitoring scale:**
+
+- A single client can poll the gateway 5-10 times per second (practical limit ~100ms per query)
+- For multiple independent monitors, use separate client instances
+- Gateway responsiveness is not affected by polling frequency (local network only)
+
+**Network impact:**
+
+- 1 query every 10 seconds = ~360 queries/hour ≈ 500 bytes/hour network traffic
+- Polling is extremely lightweight on local networks
+- Socket protocol is more efficient than HTTP for frequent queries
+
+### Event Notifications and Callbacks
+
+The EAGLE Gateway may support event notification and callback configuration, though complete documentation is beyond the scope of this library. The gateway may support:
+
+- Event/alert registration
+- Callback URLs for remote notifications
+- Integration with external services
+
+However, the meter_reader library provides no built-in support for these features. To use them:
+
+1. Refer to the official EAGLE REST API documentation
+2. Configure through the gateway's web interface (`/cgi-bin/post_manager` endpoint)
+3. Or implement application-level monitoring via polling (as shown above)
+
+This library focuses on efficient, polling-based meter data retrieval.
