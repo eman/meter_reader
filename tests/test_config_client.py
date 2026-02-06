@@ -1,7 +1,7 @@
 """Tests for meter_reader configuration client module."""
 
+from unittest.mock import patch, MagicMock
 import pytest
-from unittest.mock import patch, MagicMock, call
 import requests
 
 from meter_reader.clients.config import EagleConfigClient
@@ -164,7 +164,7 @@ class TestEagleConfigClient:
         mock_post.return_value = mock_response
 
         client = EagleConfigClient("192.168.1.100", "admin", "password")
-        result = client.set_remote_management(enabled=False)
+        client.set_remote_management(enabled=False)
 
         call_args = mock_post.call_args
         xml_data = call_args[1]["data"]
@@ -248,7 +248,7 @@ class TestEagleConfigClient:
         mock_post.return_value = mock_response
 
         client = EagleConfigClient("192.168.1.100", "admin", "password")
-        result = client.run_command("some_command", Param1="value1", Param2="value2")
+        client.run_command("some_command", Param1="value1", Param2="value2")
 
         call_args = mock_post.call_args
         xml_data = call_args[1]["data"]

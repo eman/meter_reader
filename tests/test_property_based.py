@@ -1,8 +1,7 @@
 """Property-based tests using Hypothesis for protocol validation."""
 
-import pytest
 from datetime import datetime, timezone, timedelta
-from hypothesis import given, strategies as st, assume, settings, HealthCheck
+from hypothesis import given, strategies as st, settings, HealthCheck
 from meter_reader.clients.socket import (
     twos_complement,
     convert_data,

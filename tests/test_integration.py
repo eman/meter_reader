@@ -1,6 +1,5 @@
 """Tests for meter_reader package exports and integration."""
 
-import pytest
 from meter_reader import (
     EagleSocketClient,
     EagleHttpClient,
